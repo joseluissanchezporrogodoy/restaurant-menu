@@ -10,18 +10,7 @@ import java.util.prefs.Preferences
 object Tables : Serializable {
 
 
-    private var tables: List<Table> = listOf(
-            Table("Mesa 1"),
-            Table("Mesa 2"),
-            Table("Mesa 3"),
-            Table("Mesa 4"),
-            Table("Mesa 5"),
-            Table("Mesa 6"),
-            Table("Mesa 7"),
-            Table("Mesa 8"),
-            Table("Mesa 9"),
-            Table("Mesa 10")
-    )
+    private var tables: List<Table> = generateTablesByPreferences()
 
     val count
         get() = tables.size
@@ -30,4 +19,13 @@ object Tables : Serializable {
     operator fun get(i: Int) = tables[i]
 
     fun toArray() = tables.toTypedArray()
+
+    fun generateTablesByPreferences():List<Table>{
+
+        var generatedTables = mutableListOf<Table>()
+        for(index in 0 until NUMBER_OFF_TABLES){
+            generatedTables.add(Table("Mesa ${index}"))
+        }
+        return generatedTables.toList()
+    }
 }
