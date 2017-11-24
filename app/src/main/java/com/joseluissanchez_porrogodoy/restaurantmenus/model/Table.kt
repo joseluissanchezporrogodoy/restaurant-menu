@@ -8,8 +8,6 @@ import java.io.Serializable
 
 
 data class Table(var name: String, var platos: List<Plate>?) : Serializable {
-
     constructor(name: String) : this(name, null)
-
     override fun toString() = name
 }

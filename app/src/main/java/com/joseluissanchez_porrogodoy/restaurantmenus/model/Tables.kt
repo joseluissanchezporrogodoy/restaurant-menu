@@ -15,7 +15,6 @@ object Tables : Serializable {
     val count
         get() = tables.size
 
-    //    fun getCity(index: Int) = cities[index]
     operator fun get(i: Int) = tables[i]
 
     fun toArray() = tables.toTypedArray()

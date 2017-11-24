@@ -5,4 +5,4 @@ package com.joseluissanchez_porrogodoy.restaurantmenus
  */
 
 
-const val NUMBER_OFF_TABLES:Int = 8
+const val NUMBER_OFF_TABLES:Int = 20

@@ -5,8 +5,9 @@ import android.os.Bundle
 import android.view.View
 import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.ContentFragment
 import com.joseluissanchez_porrogodoy.restaurantmenus.R
+import com.joseluissanchez_porrogodoy.restaurantmenus.model.Table
 
-class ContentActivity : AppCompatActivity() {
+class ContentActivity : AppCompatActivity(), ContentFragment.OnTableSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,5 +22,9 @@ class ContentActivity : AppCompatActivity() {
                         .commit()
             }
         }
+    }
+    override fun onTableSelected(table: Table?, position: Int) {
+
+        startActivity(MenuActivity.intent(this,position))
     }
 }

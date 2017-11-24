@@ -5,5 +5,4 @@ package com.joseluissanchez_porrogodoy.restaurantmenus.model
  */
 interface DownloadMenuInteractor {
     fun execute():List<Plate>?
-
 }
