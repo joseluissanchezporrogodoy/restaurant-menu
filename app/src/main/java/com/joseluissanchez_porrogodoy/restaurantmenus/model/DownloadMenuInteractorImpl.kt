@@ -11,7 +11,7 @@ import java.util.*
 class DownloadMenuInteractorImpl: DownloadMenuInteractor{
     override fun execute(): List<Plate>? {
         try {
-            val url = URL("http://www.mocky.io/v2/5a1338c23100004b00b33d4c")
+            val url = URL("http://www.mocky.io/v2/5a18770f2c00005038596e02")
             val jsonString = Scanner(url.openStream(), "UTF-8").useDelimiter("\\A").next()
             val jsonRoot = JSONObject(jsonString)
             val list = jsonRoot.getJSONArray("menu")
