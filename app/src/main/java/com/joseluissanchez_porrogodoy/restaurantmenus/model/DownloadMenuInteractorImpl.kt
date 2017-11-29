@@ -11,7 +11,7 @@ import java.util.*
 class DownloadMenuInteractorImpl: DownloadMenuInteractor{
     override fun execute(): List<Plate>? {
         try {
-            val url = URL("http://www.mocky.io/v2/5a18770f2c00005038596e02")
+            val url = URL("http://www.mocky.io/v2/5a1f105c2f0000ec42ee30f4")
             val jsonString = Scanner(url.openStream(), "UTF-8").useDelimiter("\\A").next()
             val jsonRoot = JSONObject(jsonString)
             val list = jsonRoot.getJSONArray("menu")
@@ -21,19 +21,15 @@ class DownloadMenuInteractorImpl: DownloadMenuInteractor{
             for(menuIndex in 0 until  list.length()){
                 val downloadedPlate = list.getJSONObject(menuIndex)
                 val name = downloadedPlate.getString("name")
-                val ingredients = mutableListOf<String>()
-                val ingredientsDW = downloadedPlate.getJSONArray("ingredients")
-                for (i in 0 until ingredientsDW.length()){
-                    ingredients.add(ingredientsDW.getString(i))
-                }
                 val allergens = mutableListOf<Int>()
                 val allergensDW = downloadedPlate.getJSONArray("allergens")
                 for (i in 0 until allergensDW.length()){
                     allergens.add(allergensDW.getString(i).toInt())
                 }
+                val price = downloadedPlate.getDouble("price").toFloat()
                 val image = downloadedPlate.getString("image").toString()
                 val description = downloadedPlate.getString("description").toString()
-                plates.add(Plate(name,ingredients,allergens,image,description))
+                plates.add(Plate(name,allergens,image,description,price))
             }
 
             return plates.toList()

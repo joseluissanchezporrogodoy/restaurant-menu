@@ -5,4 +5,5 @@
     <string name="plate_image">plate_image</string>
     <string name="deaful_plate_image">deaful_plate_image</string>
     <string name="mocked">El perro de san roque no tiene rabo</string>
+    <string name="mockup_price">Precio : 8,5 Euros</string>
 </resources>

@@ -23,9 +23,11 @@ import org.w3c.dom.Text
 class PlatesRecyclerViewAdapter(val plates: List<Plate>): RecyclerView.Adapter<PlatesRecyclerViewAdapter.PlateListViewHolder>(){
 
     override fun getItemCount() = plates.size
-
+    var onClickListener: View.OnClickListener? = null
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): PlateListViewHolder {
         val view = LayoutInflater.from(parent?.context).inflate(R.layout.plate_item, parent, false)
+
+        view.setOnClickListener (onClickListener)
         return PlateListViewHolder(view)
     }
 
@@ -37,6 +39,7 @@ class PlatesRecyclerViewAdapter(val plates: List<Plate>): RecyclerView.Adapter<P
         val plateName = itemView.findViewById<TextView>(R.id.plate_name)
         val plateImage = itemView.findViewById<ImageView>(R.id.plate_image)
         val desctiption = itemView.findViewById<TextView>(R.id.plate_description)
+        val price = itemView.findViewById<TextView>(R.id.price_text_view)
         val linear = itemView.findViewById<LinearLayout>(R.id.aller_content)
         fun bindPlate(plate: Plate){
             // Actualizo la vista con el modelo
@@ -44,7 +47,11 @@ class PlatesRecyclerViewAdapter(val plates: List<Plate>): RecyclerView.Adapter<P
             val context = itemView.context
             plateName.text = plate.name
             desctiption.text = plate.description
-            Picasso.with(context).load("http://c7.alamy.com/comp/B0E0GW/cocido-madrileo-serving-madrid-spain-B0E0GW.jpg").into(plateImage);
+            price.text = "Precio ${plate.price} Euros"
+            Picasso.with(context).
+                    load(plate.image).
+                    fit().
+                    into(plateImage);
             plate.allergens?.let{
                for(i in 0..it.size-1){
                    val lineari = LinearLayout(context)

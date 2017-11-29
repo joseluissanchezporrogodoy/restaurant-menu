@@ -5,10 +5,18 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.v7.app.AlertDialog
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.ListView
 import com.joseluissanchez_porrogodoy.restaurantmenus.R
 import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.ContentFragment
 import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.MenuFragment
+import com.joseluissanchez_porrogodoy.restaurantmenus.model.CloudPlates
+import com.joseluissanchez_porrogodoy.restaurantmenus.model.Plate
+import com.joseluissanchez_porrogodoy.restaurantmenus.model.Table
+import com.joseluissanchez_porrogodoy.restaurantmenus.model.Tables
 
 class MenuActivity : AppCompatActivity() {
     companion object {
@@ -19,7 +27,7 @@ class MenuActivity : AppCompatActivity() {
             return intent
         }
     }
-
+    val addButton: FloatingActionButton by lazy { findViewById<FloatingActionButton>(R.id.add_plate_button) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
@@ -32,10 +40,21 @@ class MenuActivity : AppCompatActivity() {
             // Comprobamos primero que no tenemos ya añadido el fragment a nuestra jerarquía
             if (fragmentManager.findFragmentById(R.id.menu_content) == null) {
                 val fragment = MenuFragment.newInstance()
+                val list: List<Plate> = ArrayList()
+                fragment.list = list
                 fragmentManager.beginTransaction()
                         .add(R.id.menu_content, fragment)
                         .commit()
             }
+        }
+        addButton?.setOnClickListener {
+            addButton.visibility = View.GONE
+            title = "Seleccione platos"
+            val fragment = MenuFragment.newInstance()
+            fragment.list = CloudPlates.plates
+            fragmentManager.beginTransaction()
+                    .replace(R.id.menu_content, fragment)
+                    .commit()
         }
     }
 }
