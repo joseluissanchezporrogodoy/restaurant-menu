@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.joseluissanchez_porrogodoy.restaurantmenus.R
+import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.MenuFragment
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Plate
 import com.squareup.picasso.Picasso
 import org.w3c.dom.Text
@@ -20,28 +21,33 @@ import org.w3c.dom.Text
  */
 
 
-class PlatesRecyclerViewAdapter(val plates: List<Plate>): RecyclerView.Adapter<PlatesRecyclerViewAdapter.PlateListViewHolder>(){
+class PlatesRecyclerViewAdapter(val plates: List<Plate>, val listener:OnPlateSelectedListener?): RecyclerView.Adapter<PlatesRecyclerViewAdapter.PlateListViewHolder>(){
+
+    private var onPlateSelectedListener: PlatesRecyclerViewAdapter.OnPlateSelectedListener? = null
 
     override fun getItemCount() = plates.size
-    var onClickListener: View.OnClickListener? = null
+
+
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): PlateListViewHolder {
         val view = LayoutInflater.from(parent?.context).inflate(R.layout.plate_item, parent, false)
-
-        view.setOnClickListener (onClickListener)
+        onPlateSelectedListener = listener
         return PlateListViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: PlateListViewHolder?, position: Int) {
-        holder?.bindPlate(plates[position])
+        holder?.bindPlate(plates[position], position)
     }
 
     inner class PlateListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+
         val plateName = itemView.findViewById<TextView>(R.id.plate_name)
         val plateImage = itemView.findViewById<ImageView>(R.id.plate_image)
         val desctiption = itemView.findViewById<TextView>(R.id.plate_description)
         val price = itemView.findViewById<TextView>(R.id.price_text_view)
         val linear = itemView.findViewById<LinearLayout>(R.id.aller_content)
-        fun bindPlate(plate: Plate){
+
+
+        fun bindPlate(plate: Plate, position: Int){
             // Actualizo la vista con el modelo
             // Accedemos al contexto
             val context = itemView.context
@@ -63,6 +69,9 @@ class PlatesRecyclerViewAdapter(val plates: List<Plate>): RecyclerView.Adapter<P
                }
 
             }
+            itemView.setOnClickListener {
+                onPlateSelectedListener?.onPlateSelected(plate,position)
+            }
         }
 
     }
@@ -79,5 +88,7 @@ class PlatesRecyclerViewAdapter(val plates: List<Plate>): RecyclerView.Adapter<P
         }
         return resource
     }
-
+    interface OnPlateSelectedListener {
+        fun onPlateSelected(plate: Plate?, position: Int)
+    }
 }

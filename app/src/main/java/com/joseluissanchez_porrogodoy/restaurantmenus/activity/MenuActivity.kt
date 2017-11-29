@@ -6,11 +6,14 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ListView
 import com.joseluissanchez_porrogodoy.restaurantmenus.R
+import com.joseluissanchez_porrogodoy.restaurantmenus.adapter.PlatesRecyclerViewAdapter
+import com.joseluissanchez_porrogodoy.restaurantmenus.adapter.PlatesRecyclerViewAdapter.OnPlateSelectedListener
 import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.ContentFragment
 import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.MenuFragment
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.CloudPlates
@@ -18,7 +21,9 @@ import com.joseluissanchez_porrogodoy.restaurantmenus.model.Plate
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Table
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Tables
 
-class MenuActivity : AppCompatActivity() {
+class MenuActivity : AppCompatActivity(), OnPlateSelectedListener {
+
+
     companion object {
         val EXTRA_TABLE_INDEX = "EXTRA_TABLE_INDEX"
         fun intent(context: Context, tableIndex: Int) : Intent {
@@ -56,5 +61,10 @@ class MenuActivity : AppCompatActivity() {
                     .replace(R.id.menu_content, fragment)
                     .commit()
         }
+    }
+
+    override fun onPlateSelected(plate: Plate?, position: Int) {
+
+        Log.d("Plato","Han pulsado un plato y tengo que ir a detalle")
     }
 }
