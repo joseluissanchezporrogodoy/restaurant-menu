@@ -16,6 +16,7 @@ import com.joseluissanchez_porrogodoy.restaurantmenus.adapter.PlatesRecyclerView
 import com.joseluissanchez_porrogodoy.restaurantmenus.adapter.PlatesRecyclerViewAdapter.OnPlateSelectedListener
 import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.ContentFragment
 import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.MenuFragment
+import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.PlateDetailFragment
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.CloudPlates
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Plate
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Table
@@ -66,5 +67,11 @@ class MenuActivity : AppCompatActivity(), OnPlateSelectedListener {
     override fun onPlateSelected(plate: Plate?, position: Int) {
 
         Log.d("Plato","Han pulsado un plato y tengo que ir a detalle")
+        addButton.visibility = View.GONE
+        title = "Detalle de Plato"
+        val fragment = PlateDetailFragment.newInstance(0,0,false)
+        fragmentManager.beginTransaction()
+                .replace(R.id.menu_content, fragment)
+                .commit()
     }
 }
