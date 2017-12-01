@@ -10,6 +10,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import com.joseluissanchez_porrogodoy.restaurantmenus.DETAIL_MODE
+import com.joseluissanchez_porrogodoy.restaurantmenus.MODE
 import com.joseluissanchez_porrogodoy.restaurantmenus.R
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.CloudPlates
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Plate
@@ -22,19 +24,15 @@ import com.squareup.picasso.Picasso
  */
 class PlateDetailFragment : Fragment() {
     companion object {
-        val EXTRA_PLATE = "PLATE"
-        val EXTRA_EDIT_MODE = "EDIT_MODE"
+
         val EXTRA_TABLE_POSITION = "EXTRA_TABLE_POSITION"
         val EXTRA_PLATE_POSITION = "EXTRA_PLATE_POSITION"
 
 
 
-        fun newInstance(tablePosition: Int,plateNumberList: Int,editMode: Boolean): PlateDetailFragment {
+        fun newInstance(tablePosition: Int,plateNumberList: Int): PlateDetailFragment {
             val arguments = Bundle()
-
-            arguments.putBoolean(EXTRA_EDIT_MODE, editMode)
             arguments.putInt(EXTRA_TABLE_POSITION, tablePosition)
-            //arguments.putSerializable(EXTRA_PLATE, plate)
             arguments.putInt(EXTRA_PLATE_POSITION,plateNumberList)
             val fragment = PlateDetailFragment()
             fragment.arguments = arguments
@@ -45,19 +43,24 @@ class PlateDetailFragment : Fragment() {
     lateinit var table: Table
     lateinit var root: View
     lateinit var note: EditText
-
+    var tablePosition: Int = -1
+    var platePosition: Int = -1
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         if (inflater != null) {
 
-            if(arguments.getBoolean(EXTRA_EDIT_MODE)){
-                plate = Tables.get(arguments.getInt(EXTRA_TABLE_POSITION)).platos!!.get(arguments.getInt(EXTRA_PLATE_POSITION))
-
-            }else{
-                plate = CloudPlates.get(arguments.getInt(EXTRA_PLATE_POSITION))
+            platePosition = arguments.getInt(EXTRA_PLATE_POSITION)
+            tablePosition = arguments.getInt(EXTRA_TABLE_POSITION)
+            when(MODE){
+                DETAIL_MODE.ADD->{
+                    plate = CloudPlates[platePosition]
+                }
+                DETAIL_MODE.EDIT->{
+                    var plates = Tables[tablePosition].platos
+                    plates?.let {
+                        plate = it[platePosition]
+                    }
+                }
             }
-
-
-
             root = inflater.inflate(R.layout.fragment_detail, container, false)
             val imageView = root.findViewById<ImageView>(R.id.plate_detail_photo)
             val description = root.findViewById<TextView>(R.id.plate_detail_description)
@@ -72,10 +75,32 @@ class PlateDetailFragment : Fragment() {
             price.text = plate.price.toString()
             name.text = plate.name
 
-
+            //val supportActionBar = (activity as? AppCompatActivity)?.supportActionBar
+            //supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
 
         return root
+
+    }
+
+    private fun cancel() {
+        //fragmentManager.popBackStack()
+        fragmentManager.popBackStack()
+    }
+    private fun add(){
+        when(MODE){
+            DETAIL_MODE.ADD->{
+                plate.updateNote(note.text.toString())
+                Tables[tablePosition].platos?.add(plate)
+
+            }
+            DETAIL_MODE.EDIT->{
+                plate.updateNote(note.text.toString())
+                Tables[tablePosition].platos?.get(platePosition)?.updateNote(note.text.toString())
+            }
+        }
+    }
+    private fun edit(){
 
     }
 }

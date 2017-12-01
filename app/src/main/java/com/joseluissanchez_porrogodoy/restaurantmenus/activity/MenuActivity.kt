@@ -11,6 +11,8 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ListView
+import com.joseluissanchez_porrogodoy.restaurantmenus.DETAIL_MODE
+import com.joseluissanchez_porrogodoy.restaurantmenus.MODE
 import com.joseluissanchez_porrogodoy.restaurantmenus.R
 import com.joseluissanchez_porrogodoy.restaurantmenus.adapter.PlatesRecyclerViewAdapter
 import com.joseluissanchez_porrogodoy.restaurantmenus.adapter.PlatesRecyclerViewAdapter.OnPlateSelectedListener
@@ -66,10 +68,10 @@ class MenuActivity : AppCompatActivity(), OnPlateSelectedListener {
 
     override fun onPlateSelected(plate: Plate?, position: Int) {
 
-        Log.d("Plato","Han pulsado un plato y tengo que ir a detalle")
         addButton.visibility = View.GONE
         title = "Detalle de Plato"
-        val fragment = PlateDetailFragment.newInstance(0,0,false)
+        MODE = DETAIL_MODE.ADD
+        val fragment = PlateDetailFragment.newInstance(0,0)
         fragmentManager.beginTransaction()
                 .replace(R.id.menu_content, fragment)
                 .commit()

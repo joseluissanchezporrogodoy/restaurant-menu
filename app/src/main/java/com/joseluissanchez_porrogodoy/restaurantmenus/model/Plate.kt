@@ -17,5 +17,7 @@ data class Plate(val name: String,
                  allergens: List<Int>?,
                  image: String?,
                  description: String? ,price: Float) : this(name,allergens,image,description,null,price)
-
+    fun updateNote(newNote: String){
+        this.note = newNote
+    }
 }
