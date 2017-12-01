@@ -5,24 +5,15 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
-import android.support.v7.app.AlertDialog
-import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.ListView
 import com.joseluissanchez_porrogodoy.restaurantmenus.DETAIL_MODE
 import com.joseluissanchez_porrogodoy.restaurantmenus.MODE
 import com.joseluissanchez_porrogodoy.restaurantmenus.R
-import com.joseluissanchez_porrogodoy.restaurantmenus.adapter.PlatesRecyclerViewAdapter
 import com.joseluissanchez_porrogodoy.restaurantmenus.adapter.PlatesRecyclerViewAdapter.OnPlateSelectedListener
-import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.ContentFragment
-import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.MenuFragment
+import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.PlatesListFragment
 import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.PlateDetailFragment
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.CloudPlates
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Plate
-import com.joseluissanchez_porrogodoy.restaurantmenus.model.Table
-import com.joseluissanchez_porrogodoy.restaurantmenus.model.Tables
 
 class MenuActivity : AppCompatActivity(), OnPlateSelectedListener {
 
@@ -47,7 +38,7 @@ class MenuActivity : AppCompatActivity(), OnPlateSelectedListener {
         if (findViewById<View>(R.id.menu_content) != null) {
             // Comprobamos primero que no tenemos ya añadido el fragment a nuestra jerarquía
             if (fragmentManager.findFragmentById(R.id.menu_content) == null) {
-                val fragment = MenuFragment.newInstance()
+                val fragment = PlatesListFragment.newInstance()
                 val list: List<Plate> = ArrayList()
                 fragment.list = list
                 fragmentManager.beginTransaction()
@@ -58,10 +49,11 @@ class MenuActivity : AppCompatActivity(), OnPlateSelectedListener {
         addButton?.setOnClickListener {
             addButton.visibility = View.GONE
             title = "Seleccione platos"
-            val fragment = MenuFragment.newInstance()
+            val fragment = PlatesListFragment.newInstance()
             fragment.list = CloudPlates.plates
             fragmentManager.beginTransaction()
                     .replace(R.id.menu_content, fragment)
+                    .addToBackStack("CloudSelect")
                     .commit()
         }
     }
@@ -74,6 +66,19 @@ class MenuActivity : AppCompatActivity(), OnPlateSelectedListener {
         val fragment = PlateDetailFragment.newInstance(0,0)
         fragmentManager.beginTransaction()
                 .replace(R.id.menu_content, fragment)
+                .addToBackStack("Detail")
                 .commit()
+    }
+
+    override fun onBackPressed() {
+        if (fragmentManager.backStackEntryCount > 0) {
+            fragmentManager.popBackStack()
+
+        } else {
+            super.onBackPressed()
+        }
+    }
+    public fun setAddButtonVisible(){
+        addButton.visibility = View.VISIBLE
     }
 }

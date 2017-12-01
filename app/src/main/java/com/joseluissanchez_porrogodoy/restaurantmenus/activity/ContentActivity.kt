@@ -3,11 +3,11 @@ package com.joseluissanchez_porrogodoy.restaurantmenus.activity
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.ContentFragment
+import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.TablesListFragment
 import com.joseluissanchez_porrogodoy.restaurantmenus.R
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Table
 
-class ContentActivity : AppCompatActivity(), ContentFragment.OnTableSelectedListener {
+class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,7 +16,7 @@ class ContentActivity : AppCompatActivity(), ContentFragment.OnTableSelectedList
         if (findViewById<View>(R.id.main_content) != null) {
             // Comprobamos primero que no tenemos ya añadido el fragment a nuestra jerarquía
             if (fragmentManager.findFragmentById(R.id.main_content) == null) {
-                val fragment = ContentFragment.newInstance()
+                val fragment = TablesListFragment.newInstance()
                 fragmentManager.beginTransaction()
                         .add(R.id.main_content, fragment)
                         .commit()

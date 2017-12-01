@@ -18,7 +18,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.android.UI
 import org.jetbrains.anko.coroutines.experimental.bg
 
-class ContentFragment : Fragment() {
+class TablesListFragment : Fragment() {
 
     interface OnTableSelectedListener {
         fun onTableSelected(table: Table?, position: Int)
@@ -28,7 +28,7 @@ class ContentFragment : Fragment() {
         LIST(1)
     }
     companion object {
-        fun newInstance() = ContentFragment()
+        fun newInstance() = TablesListFragment()
     }
 
     lateinit var root: View
@@ -39,7 +39,7 @@ class ContentFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         if (inflater != null) {
-            root = inflater.inflate(R.layout.fragment_content, container, false)
+            root = inflater.inflate(R.layout.fragment_tables_list, container, false)
             viewSwitcher = root.findViewById(R.id.view_switcher)
             viewSwitcher.setInAnimation(activity, android.R.anim.fade_in)
             viewSwitcher.setOutAnimation(activity, android.R.anim.fade_out)

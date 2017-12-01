@@ -1,8 +1,5 @@
 package com.joseluissanchez_porrogodoy.restaurantmenus.adapter
-import android.app.ActionBar
-import android.content.Context
 import android.view.View
-import android.support.v7.view.menu.ActionMenuItemView
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,10 +7,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.joseluissanchez_porrogodoy.restaurantmenus.R
-import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.MenuFragment
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Plate
 import com.squareup.picasso.Picasso
-import org.w3c.dom.Text
 
 
 /**

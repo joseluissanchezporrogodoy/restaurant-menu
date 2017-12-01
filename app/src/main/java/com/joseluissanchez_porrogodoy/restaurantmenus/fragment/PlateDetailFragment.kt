@@ -6,10 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import com.joseluissanchez_porrogodoy.restaurantmenus.DETAIL_MODE
 import com.joseluissanchez_porrogodoy.restaurantmenus.MODE
 import com.joseluissanchez_porrogodoy.restaurantmenus.R
@@ -67,6 +64,9 @@ class PlateDetailFragment : Fragment() {
             note = root.findViewById<EditText>(R.id.plate_note)
             val price = root.findViewById<TextView>(R.id.plate_detail_price)
             val name= root.findViewById<TextView>(R.id.plate_name_detail)
+            root.findViewById<Button>(R.id.add_btn).setOnClickListener { add() }
+            root.findViewById<Button>(R.id.cancel_btn).setOnClickListener { cancel() }
+
             Picasso.with(activity).
                     load(plate.image).
                     fit().
@@ -84,8 +84,9 @@ class PlateDetailFragment : Fragment() {
     }
 
     private fun cancel() {
-        //fragmentManager.popBackStack()
-        fragmentManager.popBackStack()
+
+       //fragmentManager.beginTransaction().remove(this).commit()
+        fragmentManager.popBackStackImmediate()
     }
     private fun add(){
         when(MODE){
@@ -99,8 +100,7 @@ class PlateDetailFragment : Fragment() {
                 Tables[tablePosition].platos?.get(platePosition)?.updateNote(note.text.toString())
             }
         }
+        Toast.makeText(root.context, "Editado/Añadido", Toast.LENGTH_LONG).show()
     }
-    private fun edit(){
 
-    }
 }
