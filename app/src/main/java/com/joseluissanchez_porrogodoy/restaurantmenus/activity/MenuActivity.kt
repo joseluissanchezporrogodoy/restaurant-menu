@@ -17,7 +17,7 @@ import com.joseluissanchez_porrogodoy.restaurantmenus.model.Plate
 
 class MenuActivity : AppCompatActivity(), OnPlateSelectedListener {
 
-
+    var tablePosition: Int = -1
     companion object {
         val EXTRA_TABLE_INDEX = "EXTRA_TABLE_INDEX"
         fun intent(context: Context, tableIndex: Int) : Intent {
@@ -26,44 +26,31 @@ class MenuActivity : AppCompatActivity(), OnPlateSelectedListener {
             return intent
         }
     }
-    val addButton: FloatingActionButton by lazy { findViewById<FloatingActionButton>(R.id.add_plate_button) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
 
         // Recibimos el índice de la ciudad que queremos mostrar
-        val tableIndex = intent.getIntExtra(EXTRA_TABLE_INDEX, 0)
-        title ="Mesa ${tableIndex}"
-        // Comprobamos que en la interfaz tenemos un FrameLayout llamado city_list_fragment
+        tablePosition = intent.getIntExtra(EXTRA_TABLE_INDEX, 0)
         if (findViewById<View>(R.id.menu_content) != null) {
             // Comprobamos primero que no tenemos ya añadido el fragment a nuestra jerarquía
             if (fragmentManager.findFragmentById(R.id.menu_content) == null) {
                 val fragment = PlatesListFragment.newInstance()
-                val list: List<Plate> = ArrayList()
-                fragment.list = list
+                fragment.list = CloudPlates.plates
                 fragmentManager.beginTransaction()
                         .add(R.id.menu_content, fragment)
                         .commit()
             }
         }
-        addButton?.setOnClickListener {
-            addButton.visibility = View.GONE
-            title = "Seleccione platos"
-            val fragment = PlatesListFragment.newInstance()
-            fragment.list = CloudPlates.plates
-            fragmentManager.beginTransaction()
-                    .replace(R.id.menu_content, fragment)
-                    .addToBackStack("CloudSelect")
-                    .commit()
-        }
+
+
     }
 
     override fun onPlateSelected(plate: Plate?, position: Int) {
-
-        addButton.visibility = View.GONE
         title = "Detalle de Plato"
         MODE = DETAIL_MODE.ADD
-        val fragment = PlateDetailFragment.newInstance(0,0)
+        val fragment = PlateDetailFragment.newInstance(tablePosition,position)
         fragmentManager.beginTransaction()
                 .replace(R.id.menu_content, fragment)
                 .addToBackStack("Detail")
@@ -78,7 +65,5 @@ class MenuActivity : AppCompatActivity(), OnPlateSelectedListener {
             super.onBackPressed()
         }
     }
-    public fun setAddButtonVisible(){
-        addButton.visibility = View.VISIBLE
-    }
+
 }
