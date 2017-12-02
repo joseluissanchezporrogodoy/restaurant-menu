@@ -70,14 +70,23 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
         return true
     }
     private fun showCount() {
+        var message = ""
+        var title =""
+        when(tablePosition){
+            -1 -> {
+                title = "Seleccione una mesa"
+                message = ""
+            }
+            else->{
+                var total = Tables[tablePosition].calculateCount()
+                title = "Cuenta de la mesa ${tablePosition}"
+                message = "Total a pagar: ${total} euros"
 
-        val total = Tables[tablePosition].calculateCount()
-        var title = "Cuenta de la mesa ${tablePosition}"
-        var message = "Total a pagar: ${total} euros"
+                when (total) {
+                    0f -> message = "No hay platos añadidos."
+                }
+            }
 
-
-        when (total) {
-            0f -> message = "No hay platos añadidos."
         }
 
         AlertDialog.Builder(this)
@@ -142,6 +151,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                         addButton.visibility = View.VISIBLE
                     }
                     0-> {
+                        tablePosition = -1
                         title = "Seleccione una mesa"
                         addButton.visibility = View.GONE
                     }
