@@ -29,32 +29,42 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_content)
-        title = "Seleccione una mesa"
-        if(!tableMode)
+
+        if(findViewById<View>(R.id.extra_content)!= null){
+            tableMode = true
+            addButton.visibility = View.VISIBLE
+        }else{
+            tableMode = false
+            title = "Seleccione una mesa"
             addButton.visibility = View.GONE
+        }
+
         if (savedInstanceState != null){
-            tablePosition = savedInstanceState.getInt(PlateDetailFragment.EXTRA_TABLE_POSITION)
-            title = savedInstanceState.getString(EXTRA_TITLE)
-            when(savedInstanceState.getBoolean(EXTRA_BUTTON_VISIBILITY)){
-                true -> addButton.visibility = View.VISIBLE
-                false -> addButton.visibility = View.GONE
+            if(!tableMode) {
+                tablePosition = savedInstanceState.getInt(PlateDetailFragment.EXTRA_TABLE_POSITION)
+                title = savedInstanceState.getString(EXTRA_TITLE)
+                when (savedInstanceState.getBoolean(EXTRA_BUTTON_VISIBILITY)) {
+                    true -> addButton.visibility = View.VISIBLE
+                    false -> addButton.visibility = View.GONE
+                }
+                var currenFragment = fragmentManager.findFragmentById(R.id.main_content)
+                if(currenFragment.tag == "TableList"){
+                    addButton.visibility = View.GONE
+                }
             }
+
         }
 
         if (findViewById<View>(R.id.main_content) != null) {
-            tableMode = false
             if (fragmentManager.findFragmentById(R.id.main_content) == null) {
                 val fragment = TablesListFragment.newInstance()
                 fragmentManager.beginTransaction()
-                        .add(R.id.main_content, fragment)
+                        .add(R.id.main_content, fragment,"TableList")
                         .commit()
             }
         }
         if(findViewById<View>(R.id.extra_content)!= null){
-
             if(fragmentManager.findFragmentById(R.id.extra_content) == null){
-                // Comprobamos primero que no tenemos ya añadido el fragment a nuestra jerarquía
-                tableMode = true
                 val fragment = PlatesListFragment.newInstance()
                 if(tablePosition == -1)
                     tablePosition = 0
@@ -66,9 +76,6 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                         .addToBackStack("TablePlateList")
                         .commit()
             }
-         if(tableMode){
-             setButtonVisivility()
-         }
 
         }
 
@@ -81,7 +88,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                     val fragment = PlatesListFragment.newInstance()
                     fragment.list = CloudPlates.plates
                     fragmentManager.beginTransaction()
-                            .replace(R.id.main_content, fragment)
+                            .replace(R.id.main_content, fragment,"CloudPlateList")
                             .addToBackStack("CloudPlateList")
                             .commit()
                 }
@@ -92,13 +99,13 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                     val fragment = PlatesListFragment.newInstance()
                     fragment.list = CloudPlates.plates
                     fragmentManager.beginTransaction()
-                            .replace(R.id.extra_content, fragment)
+                            .replace(R.id.extra_content, fragment,"CloudPlateList")
                             .addToBackStack("CloudPlateList")
                             .commit()
                 }
             }
-
         }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -154,7 +161,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                val fragment = PlatesListFragment.newInstance()
                fragment.list = Tables[tablePosition].platos
                fragmentManager.beginTransaction()
-                       .replace(R.id.main_content, fragment)
+                       .replace(R.id.main_content, fragment,"TablePlateList")
                        .addToBackStack("TablePlateList")
                        .commit()
 
@@ -170,7 +177,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
            title ="Mesa ${tablePosition}"
            fragment.list = Tables[tablePosition].platos
            fragmentManager.beginTransaction()
-                   .replace(R.id.extra_content, fragment)
+                   .replace(R.id.extra_content, fragment,"TablePlateList")
                    .commit()
        }
 
@@ -186,19 +193,20 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
             }
             val fragment = PlateDetailFragment.newInstance(tablePosition, position)
             fragmentManager.beginTransaction()
-                    .replace(R.id.main_content, fragment)
+                    .replace(R.id.main_content, fragment,"Detail")
                     .addToBackStack("Detail")
                     .commit()
         }else{
 
             addButton.visibility = View.GONE
 
-            when (fragmentManager.backStackEntryCount) {
-                1 ->{
+            var currenFragment = fragmentManager.findFragmentById(R.id.extra_content)
+            when (currenFragment.tag) {
+                "TablePlateList" ->{
                     MODE = DETAIL_MODE.EDIT
                     title = "Mesa ${tablePosition}/Detalle de Plato"
                 }
-                2 ->{
+                "CloudPlateList" ->{
                     MODE = DETAIL_MODE.ADD
                     title = "Mesa ${tablePosition}/Seleccione un plato/Detalle de Plato"
                 }
@@ -212,37 +220,39 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
         }
     }
     override fun onBackPressed() {
-        if (fragmentManager.backStackEntryCount > 0) {
-            fragmentManager.popBackStack()
-            val index = fragmentManager.backStackEntryCount - 1
-            val currentFragment = fragmentManager.findFragmentById(R.id.main_content)
-            when(currentFragment){
-                is PlateDetailFragment->when(index){
-                        2->{
-                            title = "Seleccione un Plato"
-                            addButton.visibility = View.GONE
+        if(!tableMode){
+            if (fragmentManager.backStackEntryCount > 0) {
+                fragmentManager.popBackStack()
+                val index = fragmentManager.backStackEntryCount - 1
+                val currentFragment = fragmentManager.findFragmentById(R.id.main_content)
+                when(currentFragment){
+                    is PlateDetailFragment->when(index){
+                            2->{
+                                title = "Seleccione un Plato"
+                                addButton.visibility = View.GONE
+                            }
+                            1->{
+                                title ="Mesa ${tablePosition}"
+                                addButton.visibility = View.VISIBLE
+                            }
                         }
-                        1->{
+
+                    is PlatesListFragment->when(index){
+                        1-> {
                             title ="Mesa ${tablePosition}"
                             addButton.visibility = View.VISIBLE
                         }
-                    }
-
-                is PlatesListFragment->when(index){
-                    1-> {
-                        title ="Mesa ${tablePosition}"
-                        addButton.visibility = View.VISIBLE
-                    }
-                    0-> {
-                        tablePosition = -1
-                        title = "Seleccione una mesa"
-                        addButton.visibility = View.GONE
+                        0-> {
+                            tablePosition = -1
+                            title = "Seleccione una mesa"
+                            addButton.visibility = View.GONE
+                        }
                     }
                 }
-            }
 
-        } else {
-            super.onBackPressed()
+            } else {
+                super.onBackPressed()
+            }
         }
     }
 
