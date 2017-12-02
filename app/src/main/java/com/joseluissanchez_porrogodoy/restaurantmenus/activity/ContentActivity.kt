@@ -30,7 +30,8 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_content)
         title = "Seleccione una mesa"
-        addButton.visibility = View.GONE
+        if(!tableMode)
+            addButton.visibility = View.GONE
         if (savedInstanceState != null){
             tablePosition = savedInstanceState.getInt(PlateDetailFragment.EXTRA_TABLE_POSITION)
             title = savedInstanceState.getString(EXTRA_TITLE)
@@ -41,7 +42,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
         }
 
         if (findViewById<View>(R.id.main_content) != null) {
-            // Comprobamos primero que no tenemos ya añadido el fragment a nuestra jerarquía
+            tableMode = false
             if (fragmentManager.findFragmentById(R.id.main_content) == null) {
                 val fragment = TablesListFragment.newInstance()
                 fragmentManager.beginTransaction()
@@ -85,7 +86,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                             .commit()
                 }
             }else{
-                title = "Seleccione un Plato"
+                title = "Mesa ${tablePosition}/Seleccione un plato"
                 addButton.visibility = View.GONE
                 if (fragmentManager.findFragmentById(R.id.main_content) != null) {
                     val fragment = PlatesListFragment.newInstance()
@@ -160,14 +161,19 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
            }
        }else{
            title = "Mesa ${position}"
+           tablePosition = position
            setButtonVisivility()
-           val currentFragment = fragmentManager.findFragmentById(R.id.extra_content)
-           when(currentFragment){
-               is PlatesListFragment->{
-                   currentFragment.changeList(Tables[position].platos)
-               }
-           }
+           val fragment = PlatesListFragment.newInstance()
+           if(tablePosition == -1)
+               tablePosition = 0
+
+           title ="Mesa ${tablePosition}"
+           fragment.list = Tables[tablePosition].platos
+           fragmentManager.beginTransaction()
+                   .replace(R.id.extra_content, fragment)
+                   .commit()
        }
+
     }
 
     override fun onPlateSelected(plate: Plate?, position: Int) {
@@ -184,11 +190,18 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                     .addToBackStack("Detail")
                     .commit()
         }else{
+
             addButton.visibility = View.GONE
-            title = "Detalle de Plato"
+
             when (fragmentManager.backStackEntryCount) {
-                1 -> MODE = DETAIL_MODE.EDIT
-                2 -> MODE = DETAIL_MODE.ADD
+                1 ->{
+                    MODE = DETAIL_MODE.EDIT
+                    title = "Mesa ${tablePosition}/Detalle de Plato"
+                }
+                2 ->{
+                    MODE = DETAIL_MODE.ADD
+                    title = "Mesa ${tablePosition}/Seleccione un plato/Detalle de Plato"
+                }
             }
             val fragment = PlateDetailFragment.newInstance(tablePosition, position)
             fragmentManager.beginTransaction()
@@ -235,6 +248,21 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
 
     fun setButtonVisivility(){
         addButton.visibility = View.VISIBLE
+    }
+    fun setTitle(newTitle: String){
+        if(!tableMode){
+            title = newTitle
+        }else{
+            when(MODE){
+                DETAIL_MODE.ADD->{
+                    title = "Mesa ${tablePosition}/Seleccione un plato"
+                }
+                DETAIL_MODE.EDIT->{
+                    title = newTitle
+                }
+            }
+        }
+
     }
     fun isAddButtonVisible():Boolean{
         var vis = false

@@ -117,13 +117,13 @@ class PlateDetailFragment : Fragment() {
         //TODO cambiar el título en funcion de la accion y meterlo en strings
         when(MODE){
             DETAIL_MODE.ADD->{
-                activity.title = "Seleccione un Plato"
+                ( activity as ContentActivity).setTitle("Seleccione un Plato")
                 plate.updateNote(note.text.toString())
                 Tables[tablePosition].platos.add(plate)
 
             }
             DETAIL_MODE.EDIT->{
-                activity.title = "Mesa ${tablePosition}"
+                ( activity as ContentActivity).setTitle("Mesa ${tablePosition}")
                 ( activity as ContentActivity).setButtonVisivility()
                 plate.updateNote(note.text.toString())
                 Tables[tablePosition].platos.get(platePosition).updateNote(note.text.toString())
