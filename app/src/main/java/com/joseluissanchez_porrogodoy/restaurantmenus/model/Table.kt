@@ -10,4 +10,12 @@ import java.io.Serializable
 data class Table(var name: String, var platos: MutableList<Plate>) : Serializable {
     constructor(name: String) : this(name, mutableListOf<Plate>())
     override fun toString() = name
+
+    fun calculateCount() : Float {
+        var total = 0f
+        if (platos.size > 0){
+            platos.map { total += it.price }
+        }
+        return total
+    }
 }

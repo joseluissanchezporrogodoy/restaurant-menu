@@ -1,9 +1,12 @@
 package com.joseluissanchez_porrogodoy.restaurantmenus.activity
 
+import android.app.AlertDialog
 import android.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import com.joseluissanchez_porrogodoy.restaurantmenus.DETAIL_MODE
 import com.joseluissanchez_porrogodoy.restaurantmenus.MODE
@@ -52,6 +55,40 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
 
         }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        super.onCreateOptionsMenu(menu)
+        getMenuInflater()?.inflate(R.menu.settings, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.table_count) {
+            showCount()
+        }
+
+        return true
+    }
+    private fun showCount() {
+
+        val total = Tables[tablePosition].calculateCount()
+        var title = "Cuenta de la mesa ${tablePosition}"
+        var message = "Total a pagar: ${total} euros"
+
+
+        when (total) {
+            0f -> message = "No hay platos añadidos."
+        }
+
+        AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(getString(android.R.string.ok), { dialog, _ ->
+                    dialog.dismiss()
+                })
+                .show()
+    }
+
     override fun onTableSelected(table: Table?, position: Int) {
         addButton.visibility = View.VISIBLE
        // startActivity(MenuActivity.intent(this,position))

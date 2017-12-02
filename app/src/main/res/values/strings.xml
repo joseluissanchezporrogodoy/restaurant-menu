@@ -9,4 +9,5 @@
     <string name="notas_title">Notas</string>
     <string name="add_btn">Añadir</string>
     <string name="cancel_btn">Cancelar</string>
+    <string name="calculate_count">Cuenta</string>
 </resources>
