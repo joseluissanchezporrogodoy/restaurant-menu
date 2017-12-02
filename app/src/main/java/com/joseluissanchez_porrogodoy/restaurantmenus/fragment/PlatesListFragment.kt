@@ -19,14 +19,14 @@ import com.joseluissanchez_porrogodoy.restaurantmenus.model.Plate
 
 
 class PlatesListFragment : Fragment() {
-
+    val LIST = "LIST"
     companion object {
         fun newInstance() = PlatesListFragment()
     }
 
     lateinit var plateList: RecyclerView
     lateinit var root: View
-    lateinit var list : List<Plate>
+    lateinit var list : ArrayList<Plate>
 
     var onPlateClickListener: PlatesRecyclerViewAdapter.OnPlateSelectedListener? = null
 
@@ -68,5 +68,10 @@ class PlatesListFragment : Fragment() {
         onPlateClickListener = null
     }
 
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+
+        outState?.putSerializable(LIST,list)
+    }
 
 }

@@ -3,13 +3,14 @@ package com.joseluissanchez_porrogodoy.restaurantmenus.model
 import org.json.JSONObject
 import java.net.URL
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by joseluissanchez-porrogodoy on 11/11/2017.
  */
 
 class DownloadMenuInteractorImpl: DownloadMenuInteractor{
-    override fun execute(): List<Plate>? {
+    override fun execute(): ArrayList<Plate>? {
         if(CloudPlates.plates.count() == 0) {
             try {
                 val url = URL("http://www.mocky.io/v2/5a225ade2f000096045ec5d3")
@@ -17,7 +18,7 @@ class DownloadMenuInteractorImpl: DownloadMenuInteractor{
                 val jsonRoot = JSONObject(jsonString)
                 val list = jsonRoot.getJSONArray("menu")
 
-                val plates = mutableListOf<Plate>()
+                val plates = arrayListOf<Plate>()
 
                 for (menuIndex in 0 until list.length()) {
                     val downloadedPlate = list.getJSONObject(menuIndex)
@@ -33,7 +34,7 @@ class DownloadMenuInteractorImpl: DownloadMenuInteractor{
                     plates.add(Plate(name, allergens, image, description, price))
                 }
 
-                return plates.toList()
+                return plates
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 return null

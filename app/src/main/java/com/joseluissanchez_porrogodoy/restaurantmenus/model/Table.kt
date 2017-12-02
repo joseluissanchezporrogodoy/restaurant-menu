@@ -7,8 +7,8 @@ import java.io.Serializable
  */
 
 
-data class Table(var name: String, var platos: MutableList<Plate>) : Serializable {
-    constructor(name: String) : this(name, mutableListOf<Plate>())
+data class Table(var name: String, var platos: ArrayList<Plate>) : Serializable {
+    constructor(name: String) : this(name, arrayListOf<Plate>())
     override fun toString() = name
 
     fun calculateCount() : Float {

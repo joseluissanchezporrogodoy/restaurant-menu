@@ -8,17 +8,9 @@ import java.io.Serializable
  */
 object CloudPlates :Serializable {
 
-    public var plates = listOf<Plate>()
-        set(value) {
-            field = value
-        }
+    public var plates = arrayListOf<Plate>()
+    
     operator fun get(i: Int) = plates[i]
 
-    fun getPlatesNameList():List<String>{
-        var generated = mutableListOf<String>()
-        for(index in 0.. this.plates.size-1){
-            generated.add(this.plates.get(index).name)
-        }
-        return generated.toList()
-    }
+
 }

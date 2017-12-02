@@ -61,7 +61,7 @@ class TablesListFragment : Fragment() {
         viewSwitcher.displayedChild = VIEW_INDEX.LOADING.index
         var dowloadMenuInteractor: DownloadMenuInteractor = DownloadMenuInteractorImpl()
         async(UI){
-            val newPlateList: Deferred<List<Plate>?> = bg {
+            val newPlateList: Deferred<ArrayList<Plate>?> = bg {
                 //dowloadPlateList()
                 dowloadMenuInteractor.execute()
             }
