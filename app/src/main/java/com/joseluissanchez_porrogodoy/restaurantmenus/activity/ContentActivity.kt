@@ -1,5 +1,6 @@
 package com.joseluissanchez_porrogodoy.restaurantmenus.activity
 
+import android.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -23,6 +24,8 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_content)
+        title = "Seleccione una mesa"
+
         // Comprobamos que en la interfaz tenemos un FrameLayout llamado city_list_fragment
         if (findViewById<View>(R.id.main_content) != null) {
             // Comprobamos primero que no tenemos ya añadido el fragment a nuestra jerarquía
@@ -34,8 +37,18 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
             }
         }
         addButton.visibility = View.GONE
+
         addButton?.setOnClickListener {
-            startActivity(MenuActivity.intent(this,tablePosition))
+            title = "Seleccione un Plato"
+            addButton.visibility = View.GONE
+            if (fragmentManager.findFragmentById(R.id.main_content) != null) {
+                val fragment = PlatesListFragment.newInstance()
+                fragment.list = CloudPlates.plates
+                fragmentManager.beginTransaction()
+                        .replace(R.id.main_content, fragment)
+                        .addToBackStack("CloudPlateList")
+                        .commit()
+            }
 
         }
     }
@@ -44,7 +57,6 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
        // startActivity(MenuActivity.intent(this,position))
         title ="Mesa ${position}"
         tablePosition = position
-        // Comprobamos que en la interfaz tenemos un FrameLayout llamado city_list_fragment
         if (findViewById<View>(R.id.main_content) != null) {
             // Comprobamos primero que no tenemos ya añadido el fragment a nuestra jerarquía
                 val fragment = PlatesListFragment.newInstance()
@@ -60,7 +72,10 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
     override fun onPlateSelected(plate: Plate?, position: Int) {
         addButton.visibility = View.GONE
         title = "Detalle de Plato"
-        MODE = DETAIL_MODE.EDIT
+        when(fragmentManager.backStackEntryCount){
+            1-> MODE = DETAIL_MODE.EDIT
+            2->MODE = DETAIL_MODE.ADD
+        }
         val fragment = PlateDetailFragment.newInstance(tablePosition,position)
         fragmentManager.beginTransaction()
                 .replace(R.id.main_content, fragment)
@@ -69,18 +84,36 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
     }
     override fun onBackPressed() {
         if (fragmentManager.backStackEntryCount > 0) {
-
             fragmentManager.popBackStack()
-            var currentFragment = fragmentManager.findFragmentById(R.id.main_content)
-            if(currentFragment is PlateDetailFragment){
-                addButton.visibility = View.VISIBLE
-            }
-            if(currentFragment is PlatesListFragment){
-                addButton.visibility = View.GONE
+            val index = fragmentManager.backStackEntryCount - 1
+            val currentFragment = fragmentManager.findFragmentById(R.id.main_content)
+            when(currentFragment){
+                is PlateDetailFragment->when(index){
+                        2->{
+                            title = "Seleccione un Plato"
+                            addButton.visibility = View.GONE
+                        }
+                        1->{
+                            title ="Mesa ${tablePosition}"
+                            addButton.visibility = View.VISIBLE
+                        }
+                    }
+
+                is PlatesListFragment->when(index){
+                    1-> {
+                        title ="Mesa ${tablePosition}"
+                        addButton.visibility = View.VISIBLE
+                    }
+                    0-> {
+                        title = "Seleccione una mesa"
+                        addButton.visibility = View.GONE
+                    }
+                }
             }
 
         } else {
             super.onBackPressed()
         }
     }
+
 }
