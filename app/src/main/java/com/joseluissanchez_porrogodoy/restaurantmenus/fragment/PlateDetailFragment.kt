@@ -108,6 +108,7 @@ class PlateDetailFragment : Fragment() {
     }
     private fun delete(){
         Tables[tablePosition].platos.removeAt(platePosition)
+        activity.title = "Mesa ${tablePosition}"
         ( activity as ContentActivity).setButtonVisivility()
         fragmentManager.popBackStackImmediate()
         Toast.makeText(root.context, "Eliminado", Toast.LENGTH_LONG).show()
