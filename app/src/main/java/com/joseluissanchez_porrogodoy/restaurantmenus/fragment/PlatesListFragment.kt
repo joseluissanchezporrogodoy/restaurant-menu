@@ -24,23 +24,27 @@ class PlatesListFragment : Fragment() {
         fun newInstance() = PlatesListFragment()
     }
 
-    lateinit var plateList: RecyclerView
+    lateinit var plateListRecyclerView: RecyclerView
     lateinit var root: View
     lateinit var list : ArrayList<Plate>
 
     var onPlateClickListener: PlatesRecyclerViewAdapter.OnPlateSelectedListener? = null
-
+    lateinit var adapter:PlatesRecyclerViewAdapter
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         if (inflater != null){
-        root = inflater.inflate(R.layout.fragment_plates_list,container,false)
-            plateList = root.findViewById(R.id.menu_list)
-            plateList.layoutManager = LinearLayoutManager(activity)
-            plateList.itemAnimator = DefaultItemAnimator()
+            if (savedInstanceState != null)
+                @Suppress("UNCHECKED_CAST")
+                list =savedInstanceState.getSerializable(LIST) as ArrayList<Plate>
+
+            root = inflater.inflate(R.layout.fragment_plates_list,container,false)
+            plateListRecyclerView = root.findViewById(R.id.menu_list)
+            plateListRecyclerView.layoutManager = LinearLayoutManager(activity)
+            plateListRecyclerView.itemAnimator = DefaultItemAnimator()
             // Adapter
-            val adapter = PlatesRecyclerViewAdapter(list, onPlateClickListener)
-            plateList.adapter = adapter
+            adapter = PlatesRecyclerViewAdapter(list, onPlateClickListener)
+            plateListRecyclerView.adapter = adapter
         }
 
         return root
@@ -72,6 +76,10 @@ class PlatesListFragment : Fragment() {
         super.onSaveInstanceState(outState)
 
         outState?.putSerializable(LIST,list)
+    }
+    fun changeList(newlist: ArrayList<Plate>){
+        plateListRecyclerView.adapter = PlatesRecyclerViewAdapter(newlist, onPlateClickListener)
+        plateListRecyclerView.adapter.notifyDataSetChanged()
     }
 
 }
