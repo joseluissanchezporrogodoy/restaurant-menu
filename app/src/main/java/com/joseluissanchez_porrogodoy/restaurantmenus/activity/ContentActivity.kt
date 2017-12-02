@@ -14,6 +14,7 @@ import com.joseluissanchez_porrogodoy.restaurantmenus.fragment.PlatesListFragmen
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.CloudPlates
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Plate
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Table
+import com.joseluissanchez_porrogodoy.restaurantmenus.model.Tables
 
 class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedListener, PlatesRecyclerViewAdapter.OnPlateSelectedListener {
 
@@ -34,15 +35,8 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
         }
         addButton.visibility = View.GONE
         addButton?.setOnClickListener {
-           // addButton.visibility = View.GONE
-           // title = "Seleccione platos"
-            //val fragment = PlatesListFragment.newInstance()
-            //fragment.list = CloudPlates.plates
-            //fragmentManager.beginTransaction()
-              //      .replace(R.id.menu_content, fragment)
-                //    .addToBackStack("CloudSelect")
-                  //  .commit()
             startActivity(MenuActivity.intent(this,tablePosition))
+
         }
     }
     override fun onTableSelected(table: Table?, position: Int) {
@@ -54,9 +48,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
         if (findViewById<View>(R.id.main_content) != null) {
             // Comprobamos primero que no tenemos ya añadido el fragment a nuestra jerarquía
                 val fragment = PlatesListFragment.newInstance()
-                val list: List<Plate> = ArrayList()
-            //  cambiar a la lista que tie que se3
-                fragment.list = list
+                fragment.list = Tables[tablePosition].platos
                 fragmentManager.beginTransaction()
                         .replace(R.id.main_content, fragment)
                         .addToBackStack("TablePlateList")
@@ -66,18 +58,26 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
     }
 
     override fun onPlateSelected(plate: Plate?, position: Int) {
+        addButton.visibility = View.GONE
         title = "Detalle de Plato"
         MODE = DETAIL_MODE.EDIT
         val fragment = PlateDetailFragment.newInstance(tablePosition,position)
         fragmentManager.beginTransaction()
-                .replace(R.id.menu_content, fragment)
+                .replace(R.id.main_content, fragment)
                 .addToBackStack("Detail")
                 .commit()
     }
     override fun onBackPressed() {
         if (fragmentManager.backStackEntryCount > 0) {
-            addButton.visibility = View.GONE
+
             fragmentManager.popBackStack()
+            var currentFragment = fragmentManager.findFragmentById(R.id.main_content)
+            if(currentFragment is PlateDetailFragment){
+                addButton.visibility = View.VISIBLE
+            }
+            if(currentFragment is PlatesListFragment){
+                addButton.visibility = View.GONE
+            }
 
         } else {
             super.onBackPressed()

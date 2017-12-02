@@ -7,7 +7,7 @@ import java.io.Serializable
  */
 
 
-data class Table(var name: String, var platos: MutableList<Plate>?) : Serializable {
-    constructor(name: String) : this(name, null)
+data class Table(var name: String, var platos: MutableList<Plate>) : Serializable {
+    constructor(name: String) : this(name, mutableListOf<Plate>())
     override fun toString() = name
 }

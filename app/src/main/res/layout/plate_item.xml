@@ -69,7 +69,9 @@
             android:text="@string/mocked"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/plate_image"
-            app:layout_constraintTop_toTopOf="@+id/plate_image" />
+            app:layout_constraintTop_toTopOf="@+id/plate_image"
+            android:ellipsize="end"
+            android:maxLines="5"/>
 
         <TextView
             android:id="@+id/price_text_view"

@@ -62,6 +62,7 @@ class PlateDetailFragment : Fragment() {
             val imageView = root.findViewById<ImageView>(R.id.plate_detail_photo)
             val description = root.findViewById<TextView>(R.id.plate_detail_description)
             note = root.findViewById<EditText>(R.id.plate_note)
+
             val price = root.findViewById<TextView>(R.id.plate_detail_price)
             val name= root.findViewById<TextView>(R.id.plate_name_detail)
             root.findViewById<Button>(R.id.add_btn).setOnClickListener { add() }
@@ -74,6 +75,7 @@ class PlateDetailFragment : Fragment() {
             description.text = plate.description
             price.text = plate.price.toString()
             name.text = plate.name
+            note.setText(plate.note)
 
             //val supportActionBar = (activity as? AppCompatActivity)?.supportActionBar
             //supportActionBar?.setDisplayHomeAsUpEnabled(true)

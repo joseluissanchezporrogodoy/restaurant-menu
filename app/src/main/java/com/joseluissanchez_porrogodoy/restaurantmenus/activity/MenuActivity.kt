@@ -31,7 +31,6 @@ class MenuActivity : AppCompatActivity(), OnPlateSelectedListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
 
-        // Recibimos el índice de la ciudad que queremos mostrar
         tablePosition = intent.getIntExtra(EXTRA_TABLE_INDEX, 0)
         if (findViewById<View>(R.id.menu_content) != null) {
             // Comprobamos primero que no tenemos ya añadido el fragment a nuestra jerarquía
