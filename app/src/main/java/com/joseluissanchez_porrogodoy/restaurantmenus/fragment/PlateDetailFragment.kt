@@ -86,23 +86,30 @@ class PlateDetailFragment : Fragment() {
     }
 
     private fun cancel() {
+        when(MODE){
+            DETAIL_MODE.ADD-> activity.title = "Seleccione un Plato"
+            DETAIL_MODE.EDIT-> activity.title = "Mesa ${tablePosition}"
+        }
 
-       //fragmentManager.beginTransaction().remove(this).commit()
         fragmentManager.popBackStackImmediate()
+
     }
     private fun add(){
         when(MODE){
             DETAIL_MODE.ADD->{
+                activity.title = "Seleccione un Plato"
                 plate.updateNote(note.text.toString())
                 Tables[tablePosition].platos?.add(plate)
 
             }
             DETAIL_MODE.EDIT->{
+                activity.title = "Mesa ${tablePosition}"
                 plate.updateNote(note.text.toString())
                 Tables[tablePosition].platos?.get(platePosition)?.updateNote(note.text.toString())
             }
         }
         Toast.makeText(root.context, "Editado/Añadido", Toast.LENGTH_LONG).show()
+        fragmentManager.popBackStackImmediate()
     }
 
 }
