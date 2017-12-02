@@ -10,6 +10,7 @@ import android.widget.*
 import com.joseluissanchez_porrogodoy.restaurantmenus.DETAIL_MODE
 import com.joseluissanchez_porrogodoy.restaurantmenus.MODE
 import com.joseluissanchez_porrogodoy.restaurantmenus.R
+import com.joseluissanchez_porrogodoy.restaurantmenus.activity.ContentActivity
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.CloudPlates
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Plate
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Table
@@ -37,9 +38,16 @@ class PlateDetailFragment : Fragment() {
         }
     }
     lateinit var plate: Plate
-    lateinit var table: Table
     lateinit var root: View
+
+    lateinit var name: TextView
+    lateinit var imageView: ImageView
+    lateinit var description: TextView
+    lateinit var price: TextView
     lateinit var note: EditText
+
+
+
     var tablePosition: Int = -1
     var platePosition: Int = -1
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -47,26 +55,24 @@ class PlateDetailFragment : Fragment() {
 
             platePosition = arguments.getInt(EXTRA_PLATE_POSITION)
             tablePosition = arguments.getInt(EXTRA_TABLE_POSITION)
+            setDetailViews(inflater, container)
+
             when(MODE){
                 DETAIL_MODE.ADD->{
                     plate = CloudPlates[platePosition]
+                    root.findViewById<Button>(R.id.add_btn).setText("Añadir")
+                    root.findViewById<Button>(R.id.cancel_btn).setText("Cancelar")
+                    root.findViewById<Button>(R.id.cancel_btn).setOnClickListener { cancel() }
                 }
                 DETAIL_MODE.EDIT->{
-                    var plates = Tables[tablePosition].platos
-                    plates?.let {
-                        plate = it[platePosition]
-                    }
+                    plate = Tables[tablePosition].platos[platePosition]
+                    root.findViewById<Button>(R.id.add_btn).setText("Editar")
+                    root.findViewById<Button>(R.id.cancel_btn).setText("Eliminar")
+                    root.findViewById<Button>(R.id.cancel_btn).setOnClickListener { delete()}
                 }
             }
-            root = inflater.inflate(R.layout.fragment_detail, container, false)
-            val imageView = root.findViewById<ImageView>(R.id.plate_detail_photo)
-            val description = root.findViewById<TextView>(R.id.plate_detail_description)
-            note = root.findViewById<EditText>(R.id.plate_note)
-
-            val price = root.findViewById<TextView>(R.id.plate_detail_price)
-            val name= root.findViewById<TextView>(R.id.plate_name_detail)
             root.findViewById<Button>(R.id.add_btn).setOnClickListener { add() }
-            root.findViewById<Button>(R.id.cancel_btn).setOnClickListener { cancel() }
+
 
             Picasso.with(activity).
                     load(plate.image).
@@ -77,12 +83,19 @@ class PlateDetailFragment : Fragment() {
             name.text = plate.name
             note.setText(plate.note)
 
-            //val supportActionBar = (activity as? AppCompatActivity)?.supportActionBar
-            //supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
 
         return root
 
+    }
+
+    private fun setDetailViews(inflater: LayoutInflater, container: ViewGroup?) {
+        root = inflater.inflate(R.layout.fragment_detail, container, false)
+        name = root.findViewById<TextView>(R.id.plate_name_detail)
+        imageView = root.findViewById<ImageView>(R.id.plate_detail_photo)
+        description = root.findViewById<TextView>(R.id.plate_detail_description)
+        price = root.findViewById<TextView>(R.id.plate_detail_price)
+        note = root.findViewById<EditText>(R.id.plate_note)
     }
 
     private fun cancel() {
@@ -92,24 +105,32 @@ class PlateDetailFragment : Fragment() {
         }
 
         fragmentManager.popBackStackImmediate()
-
+    }
+    private fun delete(){
+        Tables[tablePosition].platos.removeAt(platePosition)
+        ( activity as ContentActivity).setButtonVisivility()
+        fragmentManager.popBackStackImmediate()
+        Toast.makeText(root.context, "Eliminado", Toast.LENGTH_LONG).show()
     }
     private fun add(){
+        //TODO cambiar el título en funcion de la accion y meterlo en strings
         when(MODE){
             DETAIL_MODE.ADD->{
                 activity.title = "Seleccione un Plato"
                 plate.updateNote(note.text.toString())
-                Tables[tablePosition].platos?.add(plate)
+                Tables[tablePosition].platos.add(plate)
 
             }
             DETAIL_MODE.EDIT->{
                 activity.title = "Mesa ${tablePosition}"
+                ( activity as ContentActivity).setButtonVisivility()
                 plate.updateNote(note.text.toString())
-                Tables[tablePosition].platos?.get(platePosition)?.updateNote(note.text.toString())
+                Tables[tablePosition].platos.get(platePosition).updateNote(note.text.toString())
             }
         }
         Toast.makeText(root.context, "Editado/Añadido", Toast.LENGTH_LONG).show()
         fragmentManager.popBackStackImmediate()
     }
+
 
 }

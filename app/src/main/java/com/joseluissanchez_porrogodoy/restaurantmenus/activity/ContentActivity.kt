@@ -116,4 +116,8 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
         }
     }
 
+    fun setButtonVisivility(){
+        addButton.visibility = View.VISIBLE
+    }
+
 }
