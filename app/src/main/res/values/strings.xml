@@ -12,5 +12,9 @@
     <string name="calculate_count">Cuenta</string>
     <string name="selec_table">Seleccione una mesa</string>
     <string name="table">Mesa</string>
-    <string name="selec_plate">Seleccione un plato</string>
+    <string name="selec_plate">Seleccione un plato</string>+
+    <string name="total_count">Cuenta de la mesa</string>
+    <string name="total_message">Total a pagar: %s euros</string>
+    <string name="total_empty">No hay platos añadidos.</string>
+    <string name="plate_detail">Detalle de Plato</string>
 </resources>

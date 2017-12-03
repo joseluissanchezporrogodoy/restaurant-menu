@@ -91,7 +91,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
     }
 
     private fun setAddButton() {
-        addButton?.setOnClickListener {
+        addButton.setOnClickListener {
             if (!tableMode) {
                 title = resources.getString(R.string.table)+" ${tablePosition}/"+resources.getString(R.string.selec_plate)
                 addButton.visibility = View.GONE
@@ -132,20 +132,20 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
         return true
     }
     private fun showCount() {
-        var message = ""
-        var title =""
+        var message: String
+        var title: String
         when(tablePosition){
             -1 -> {
                 title = resources.getString(R.string.selec_table)
                 message = ""
             }
             else->{
-                var total = Tables[tablePosition].calculateCount()
-                title = "Cuenta de la mesa ${tablePosition}"
-                message = "Total a pagar: ${total} euros"
+                val total = Tables[tablePosition].calculateCount()
+                title =   resources.getString(R.string.total_count)+" ${tablePosition}"
+                message = resources.getString(R.string.total_message, total.toString())
 
                 when (total) {
-                    0f -> message = "No hay platos añadidos."
+                    0f -> message = resources.getString(R.string.total_empty)
                 }
             }
 
@@ -197,7 +197,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
         platePosition = position
         if(!tableMode) {
             addButton.visibility = View.GONE
-            title = "Detalle de Plato"
+            title = resources.getString(R.string.plate_detail)
             when (fragmentManager.backStackEntryCount) {
                 1 ->{
                     MODE = DETAIL_MODE.EDIT
@@ -224,7 +224,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
             when (currenFragment.tag) {
                 TABLE_PLATE_LIST_TAG ->{
                     MODE = DETAIL_MODE.EDIT
-                    title = resources.getString(R.string.table)+" ${tablePosition}/Detalle de Plato"
+                    title = resources.getString(R.string.table)+" ${tablePosition}/"+resources.getString(R.string.plate_detail)
                     val fragment = PlateDetailFragment.newInstance(tablePosition, platePosition)
                     fragmentManager.beginTransaction()
                             .replace(R.id.extra_content, fragment, DETAIL_EDIT_TAG)
@@ -233,7 +233,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                 }
                 CLOUD_PLATE_LIST_TAG ->{
                     MODE = DETAIL_MODE.ADD
-                    title = resources.getString(R.string.table)+" ${tablePosition}/"+resources.getString(R.string.selec_plate)+"/Detalle de Plato"
+                    title = resources.getString(R.string.table)+" ${tablePosition}/"+resources.getString(R.string.selec_plate)+"/"+resources.getString(R.string.plate_detail)
                     val fragment = PlateDetailFragment.newInstance(tablePosition, platePosition)
                     fragmentManager.beginTransaction()
                             .replace(R.id.extra_content, fragment, DETAIL_ADD_TAG)
