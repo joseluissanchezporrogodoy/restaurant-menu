@@ -19,15 +19,17 @@ import com.joseluissanchez_porrogodoy.restaurantmenus.model.Plate
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Table
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Tables
 
-private val CLOUD_PLATE_LIST_TAG = "CloudPlateList"
-
-private val DETAIL_EDIT_TAG = "DetailEdit"
-
-private val TABLE_PLATE_LIST_TAG = "TablePlateList"
-
-private val DETAIL_ADD_TAG = "DetailAdd"
-
 class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedListener, PlatesRecyclerViewAdapter.OnPlateSelectedListener {
+    private val CLOUD_PLATE_LIST_TAG = "CloudPlateList"
+
+    private val DETAIL_EDIT_TAG = "DetailEdit"
+
+    private val TABLE_PLATE_LIST_TAG = "TablePlateList"
+
+    private val DETAIL_ADD_TAG = "DetailAdd"
+
+    private val TABLE_LIST_TAG = "TableList"
+
     val EXTRA_TITLE = "EXTRA_TITLE"
     val EXTRA_BUTTON_VISIBILITY = "EXTRA_BUTTON_VISIBILITY"
     val EXTRA_FRAGMENT_TAG = "EXTRA_FRAGMENT_TAG"
@@ -37,6 +39,8 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
     var platePosition: Int = -1
     var fragmentTag:String = ""
     var tableMode = false
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_content)
@@ -47,7 +51,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
             //initTableMode()
         }else{
             tableMode = false
-            title = "Seleccione una mesa"
+            title = resources.getString(R.string.selec_table)
             addButton.visibility = View.GONE
         }
         /// Solo recupero los datos no me preocupo de otra cosa
@@ -63,7 +67,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
             if (fragmentManager.findFragmentById(R.id.main_content) == null || tableMode) {
                 val fragment = TablesListFragment.newInstance()
                 fragmentManager.beginTransaction()
-                        .replace(R.id.main_content, fragment,"TableList")
+                        .replace(R.id.main_content, fragment, TABLE_LIST_TAG)
                         .commit()
             }
         }
@@ -74,7 +78,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
             setButtonVisivility()
             val fragment = PlatesListFragment.newInstance()
             fragment.list = Tables[tablePosition].platos
-            title = "Mesa ${tablePosition}"
+            title = resources.getString(R.string.table)+" ${tablePosition}"
             fragmentManager.beginTransaction()
                     .replace(R.id.extra_content, fragment, TABLE_PLATE_LIST_TAG)
                     .commit()
@@ -89,7 +93,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
     private fun setAddButton() {
         addButton?.setOnClickListener {
             if (!tableMode) {
-                title = "Mesa ${tablePosition}/Seleccione un plato"
+                title = resources.getString(R.string.table)+" ${tablePosition}/"+resources.getString(R.string.selec_plate)
                 addButton.visibility = View.GONE
                 if (fragmentManager.findFragmentById(R.id.main_content) != null) {
                     val fragment = PlatesListFragment.newInstance()
@@ -100,7 +104,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                             .commit()
                 }
             } else {
-                title = "Mesa ${tablePosition}/Seleccione un plato"
+                title = resources.getString(R.string.table)+" ${tablePosition}/"+resources.getString(R.string.selec_plate)
                 addButton.visibility = View.GONE
                 if (fragmentManager.findFragmentById(R.id.main_content) != null) {
                     val fragment = PlatesListFragment.newInstance()
@@ -132,7 +136,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
         var title =""
         when(tablePosition){
             -1 -> {
-                title = "Seleccione una mesa"
+                title = resources.getString(R.string.selec_table)
                 message = ""
             }
             else->{
@@ -160,7 +164,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
        if(!tableMode) {
            addButton.visibility = View.VISIBLE
            // startActivity(MenuActivity.intent(this,position))
-           title = "Mesa ${position}"
+           title = resources.getString(R.string.table)+" ${position}"
            tablePosition = position
            if (findViewById<View>(R.id.main_content) != null) {
                // Comprobamos primero que no tenemos ya añadido el fragment a nuestra jerarquía
@@ -173,14 +177,14 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
 
            }
        }else{
-           title = "Mesa ${position}"
+           title = resources.getString(R.string.table)+" ${position}"
            tablePosition = position
            setButtonVisivility()
            val fragment = PlatesListFragment.newInstance()
            if(tablePosition == -1)
                tablePosition = 0
 
-           title ="Mesa ${tablePosition}"
+           title =resources.getString(R.string.table)+" ${tablePosition}"
            fragment.list = Tables[tablePosition].platos
            fragmentManager.beginTransaction()
                    .replace(R.id.extra_content, fragment, TABLE_PLATE_LIST_TAG)
@@ -220,7 +224,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
             when (currenFragment.tag) {
                 TABLE_PLATE_LIST_TAG ->{
                     MODE = DETAIL_MODE.EDIT
-                    title = "Mesa ${tablePosition}/Detalle de Plato"
+                    title = resources.getString(R.string.table)+" ${tablePosition}/Detalle de Plato"
                     val fragment = PlateDetailFragment.newInstance(tablePosition, platePosition)
                     fragmentManager.beginTransaction()
                             .replace(R.id.extra_content, fragment, DETAIL_EDIT_TAG)
@@ -229,7 +233,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                 }
                 CLOUD_PLATE_LIST_TAG ->{
                     MODE = DETAIL_MODE.ADD
-                    title = "Mesa ${tablePosition}/Seleccione un plato/Detalle de Plato"
+                    title = resources.getString(R.string.table)+" ${tablePosition}/"+resources.getString(R.string.selec_plate)+"/Detalle de Plato"
                     val fragment = PlateDetailFragment.newInstance(tablePosition, platePosition)
                     fragmentManager.beginTransaction()
                             .replace(R.id.extra_content, fragment, DETAIL_ADD_TAG)
@@ -249,20 +253,20 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                 when(currentFragment.tag){
 
                     CLOUD_PLATE_LIST_TAG ->{
-                        title ="Mesa ${tablePosition}"
+                        title =resources.getString(R.string.table)+" ${tablePosition}"
                         addButton.visibility = View.VISIBLE
                     }
                     DETAIL_EDIT_TAG ->{
-                        title = "Mesa ${tablePosition}/Seleccione un plato"
+                        title = resources.getString(R.string.table)+" ${tablePosition}/"+resources.getString(R.string.selec_plate)
                         addButton.visibility = View.GONE
                     }
                     TABLE_PLATE_LIST_TAG ->{
                         tablePosition = -1
-                        title = "Seleccione una mesa"
+                        title = resources.getString(R.string.selec_table)
                         addButton.visibility = View.GONE
                     }
                     DETAIL_ADD_TAG ->{
-                        title ="Mesa ${tablePosition}"
+                        title =resources.getString(R.string.table)+" ${tablePosition}"
                         addButton.visibility = View.VISIBLE
                     }
                 }
@@ -282,7 +286,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
         }else{
             when(MODE){
                 DETAIL_MODE.ADD->{
-                    title = "Mesa ${tablePosition}/Seleccione un plato"
+                    title = resources.getString(R.string.table)+"${tablePosition}/"+resources.getString(R.string.selec_plate)
                 }
                 DETAIL_MODE.EDIT->{
                     title = newTitle

@@ -10,3 +10,6 @@ enum class DETAIL_MODE(val index: Int){
 }
 
 var MODE: DETAIL_MODE = DETAIL_MODE.EDIT
+
+
+

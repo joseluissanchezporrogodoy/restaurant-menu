@@ -100,15 +100,15 @@ class PlateDetailFragment : Fragment() {
 
     private fun cancel() {
         when(MODE){
-            DETAIL_MODE.ADD-> activity.title = "Mesa ${tablePosition}/Seleccione un plato"
-            DETAIL_MODE.EDIT-> activity.title = "Mesa ${tablePosition}"
+            DETAIL_MODE.ADD-> activity.title = resources.getString(R.string.table)+" ${tablePosition}/"+resources.getString(R.string.selec_plate)
+            DETAIL_MODE.EDIT-> activity.title = resources.getString(R.string.table)+" ${tablePosition}"
         }
 
         fragmentManager.popBackStackImmediate()
     }
     private fun delete(){
         Tables[tablePosition].platos.removeAt(platePosition)
-        activity.title = "Mesa ${tablePosition}"
+        activity.title = resources.getString(R.string.table)+" ${tablePosition}"
         ( activity as ContentActivity).setButtonVisivility()
         fragmentManager.popBackStackImmediate()
         Toast.makeText(root.context, "Eliminado", Toast.LENGTH_LONG).show()
@@ -116,7 +116,7 @@ class PlateDetailFragment : Fragment() {
     private fun add(){
         when(MODE){
             DETAIL_MODE.ADD->{
-                ( activity as ContentActivity).setTitle("Mesa ${tablePosition}/Seleccione un plato")
+                ( activity as ContentActivity).setTitle(resources.getString(R.string.table)+" ${tablePosition}/"+resources.getString(R.string.selec_plate))
                 var plateTosave = plate.copy()
                 plateTosave.updateNote(note.text.toString())
                 Tables[tablePosition].platos.add(plateTosave)
@@ -124,7 +124,7 @@ class PlateDetailFragment : Fragment() {
 
             }
             DETAIL_MODE.EDIT->{
-                ( activity as ContentActivity).setTitle("Mesa ${tablePosition}")
+                ( activity as ContentActivity).setTitle(resources.getString(R.string.table)+" ${tablePosition}")
                 ( activity as ContentActivity).setButtonVisivility()
                 plate.updateNote(note.text.toString())
                 Tables[tablePosition].platos.get(platePosition).updateNote(note.text.toString())

@@ -10,4 +10,7 @@
     <string name="add_btn">Añadir</string>
     <string name="cancel_btn">Cancelar</string>
     <string name="calculate_count">Cuenta</string>
+    <string name="selec_table">Seleccione una mesa</string>
+    <string name="table">Mesa</string>
+    <string name="selec_plate">Seleccione un plato</string>
 </resources>
