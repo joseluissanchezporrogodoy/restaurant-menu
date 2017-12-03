@@ -23,8 +23,12 @@ import com.joseluissanchez_porrogodoy.restaurantmenus.model.Tables
 class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedListener, PlatesRecyclerViewAdapter.OnPlateSelectedListener {
     val EXTRA_TITLE = "EXTRA_TITLE"
     val EXTRA_BUTTON_VISIBILITY = "EXTRA_BUTTON_VISIBILITY"
+    val EXTRA_FRAGMENT_TAG = "EXTRA_FRAGMENT_TAG"
+
     val addButton: FloatingActionButton by lazy { findViewById<FloatingActionButton>(R.id.add_plate_button) }
     var tablePosition: Int = -1
+    var platePosition: Int = -1
+    var fragmentTag:String = ""
     var tableMode = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,79 +37,74 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
         if(findViewById<View>(R.id.extra_content)!= null){
             tableMode = true
             addButton.visibility = View.VISIBLE
+            //initTableMode()
         }else{
             tableMode = false
             title = "Seleccione una mesa"
             addButton.visibility = View.GONE
         }
-
+        /// Solo recupero los datos no me preocupo de otra cosa
         if (savedInstanceState != null){
-            if(!tableMode) {
-                tablePosition = savedInstanceState.getInt(PlateDetailFragment.EXTRA_TABLE_POSITION)
-                title = savedInstanceState.getString(EXTRA_TITLE)
-                when (savedInstanceState.getBoolean(EXTRA_BUTTON_VISIBILITY)) {
-                    true -> addButton.visibility = View.VISIBLE
-                    false -> addButton.visibility = View.GONE
-                }
-                var currenFragment = fragmentManager.findFragmentById(R.id.main_content)
-                if(currenFragment.tag == "TableList"){
-                    addButton.visibility = View.GONE
-                }
-            }
-
+            tablePosition = savedInstanceState.getInt(PlateDetailFragment.EXTRA_TABLE_POSITION)
+            platePosition = savedInstanceState.getInt(PlateDetailFragment.EXTRA_PLATE_POSITION)
+            fragmentTag = savedInstanceState.getString(EXTRA_FRAGMENT_TAG)
         }
+
 
         if (findViewById<View>(R.id.main_content) != null) {
-            if (fragmentManager.findFragmentById(R.id.main_content) == null) {
+            tablePosition = -1
+            if (fragmentManager.findFragmentById(R.id.main_content) == null || tableMode) {
                 val fragment = TablesListFragment.newInstance()
                 fragmentManager.beginTransaction()
-                        .add(R.id.main_content, fragment,"TableList")
+                        .replace(R.id.main_content, fragment,"TableList")
                         .commit()
             }
         }
-        if(findViewById<View>(R.id.extra_content)!= null){
-            if(fragmentManager.findFragmentById(R.id.extra_content) == null){
-                val fragment = PlatesListFragment.newInstance()
-                if(tablePosition == -1)
-                    tablePosition = 0
 
-                title ="Mesa ${tablePosition}"
-                fragment.list = Tables[tablePosition].platos
-                fragmentManager.beginTransaction()
-                        .replace(R.id.extra_content, fragment)
-                        .addToBackStack("TablePlateList")
-                        .commit()
-            }
+        if(tableMode){
+            tablePosition= 0
+            MODE = DETAIL_MODE.EDIT
+            setButtonVisivility()
+            val fragment = PlatesListFragment.newInstance()
+            fragment.list = Tables[tablePosition].platos
+            title = "Mesa ${tablePosition}"
+            fragmentManager.beginTransaction()
+                    .replace(R.id.extra_content, fragment,"TablePlateList")
+                    .commit()
 
         }
 
 
+        setAddButton()
+
+    }
+
+    private fun setAddButton() {
         addButton?.setOnClickListener {
-            if(!tableMode) {
+            if (!tableMode) {
                 title = "Seleccione un Plato"
                 addButton.visibility = View.GONE
                 if (fragmentManager.findFragmentById(R.id.main_content) != null) {
                     val fragment = PlatesListFragment.newInstance()
                     fragment.list = CloudPlates.plates
                     fragmentManager.beginTransaction()
-                            .replace(R.id.main_content, fragment,"CloudPlateList")
+                            .replace(R.id.main_content, fragment, "CloudPlateList")
                             .addToBackStack("CloudPlateList")
                             .commit()
                 }
-            }else{
+            } else {
                 title = "Mesa ${tablePosition}/Seleccione un plato"
                 addButton.visibility = View.GONE
                 if (fragmentManager.findFragmentById(R.id.main_content) != null) {
                     val fragment = PlatesListFragment.newInstance()
                     fragment.list = CloudPlates.plates
                     fragmentManager.beginTransaction()
-                            .replace(R.id.extra_content, fragment,"CloudPlateList")
+                            .replace(R.id.extra_content, fragment, "CloudPlateList")
                             .addToBackStack("CloudPlateList")
                             .commit()
                 }
             }
         }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -184,38 +183,54 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
     }
 
     override fun onPlateSelected(plate: Plate?, position: Int) {
+        platePosition = position
         if(!tableMode) {
             addButton.visibility = View.GONE
             title = "Detalle de Plato"
             when (fragmentManager.backStackEntryCount) {
-                1 -> MODE = DETAIL_MODE.EDIT
-                2 -> MODE = DETAIL_MODE.ADD
+                1 ->{
+                    MODE = DETAIL_MODE.EDIT
+                    val fragment = PlateDetailFragment.newInstance(tablePosition, platePosition)
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.main_content, fragment,"DetailEdit")
+                            .addToBackStack("DetailEdit")
+                            .commit()
+                }
+                2 ->{
+                    MODE = DETAIL_MODE.ADD
+                    val fragment = PlateDetailFragment.newInstance(tablePosition, platePosition)
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.main_content, fragment,"DetailAdd")
+                            .addToBackStack("DetailADD")
+                            .commit()
+                }
             }
-            val fragment = PlateDetailFragment.newInstance(tablePosition, position)
-            fragmentManager.beginTransaction()
-                    .replace(R.id.main_content, fragment,"Detail")
-                    .addToBackStack("Detail")
-                    .commit()
+
         }else{
 
             addButton.visibility = View.GONE
-
-            var currenFragment = fragmentManager.findFragmentById(R.id.extra_content)
+            val currenFragment = fragmentManager.findFragmentById(R.id.extra_content)
             when (currenFragment.tag) {
                 "TablePlateList" ->{
                     MODE = DETAIL_MODE.EDIT
                     title = "Mesa ${tablePosition}/Detalle de Plato"
+                    val fragment = PlateDetailFragment.newInstance(tablePosition, platePosition)
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.extra_content, fragment,"DetailEdit")
+                            .addToBackStack("DetailEdit")
+                            .commit()
                 }
                 "CloudPlateList" ->{
                     MODE = DETAIL_MODE.ADD
                     title = "Mesa ${tablePosition}/Seleccione un plato/Detalle de Plato"
+                    val fragment = PlateDetailFragment.newInstance(tablePosition, platePosition)
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.extra_content, fragment,"DetailAdd")
+                            .addToBackStack("DetailAdd")
+                            .commit()
                 }
             }
-            val fragment = PlateDetailFragment.newInstance(tablePosition, position)
-            fragmentManager.beginTransaction()
-                    .replace(R.id.extra_content, fragment)
-                    .addToBackStack("Detail")
-                    .commit()
+
 
         }
     }
@@ -274,7 +289,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
         }
 
     }
-    fun isAddButtonVisible():Boolean{
+    private fun isAddButtonVisible():Boolean{
         var vis = false
         when(addButton.visibility){
             View.VISIBLE-> vis =  true
@@ -285,7 +300,28 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         outState?.putSerializable(PlateDetailFragment.EXTRA_TABLE_POSITION,tablePosition)
+        outState?.putSerializable(PlateDetailFragment.EXTRA_PLATE_POSITION,platePosition)
         outState?.putSerializable(EXTRA_TITLE,title.toString())
         outState?.putSerializable(EXTRA_BUTTON_VISIBILITY,isAddButtonVisible())
+        outState?.putSerializable(EXTRA_FRAGMENT_TAG,getPreviousFragmentTag())
+
     }
+
+    private fun getPreviousFragmentTag():String{
+        when(tableMode){
+            true ->{
+                val currentFragment = fragmentManager.findFragmentById(R.id.extra_content)
+
+                return currentFragment.tag
+            }
+            false ->{
+                val currentFragment = fragmentManager.findFragmentById(R.id.main_content)
+
+                return currentFragment.tag
+            }
+
+        }
+
+    }
+
 }
