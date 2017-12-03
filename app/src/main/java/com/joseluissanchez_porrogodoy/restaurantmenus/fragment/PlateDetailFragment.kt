@@ -117,7 +117,6 @@ class PlateDetailFragment : Fragment() {
         when(MODE){
             DETAIL_MODE.ADD->{
                 ( activity as ContentActivity).setTitle("Mesa ${tablePosition}/Seleccione un plato")
-                //plate.updateNote(note.text.toString())
                 var plateTosave = plate.copy()
                 plateTosave.updateNote(note.text.toString())
                 Tables[tablePosition].platos.add(plateTosave)

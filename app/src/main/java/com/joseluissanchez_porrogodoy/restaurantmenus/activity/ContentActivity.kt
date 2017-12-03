@@ -1,7 +1,6 @@
 package com.joseluissanchez_porrogodoy.restaurantmenus.activity
 
 import android.app.AlertDialog
-import android.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -19,6 +18,14 @@ import com.joseluissanchez_porrogodoy.restaurantmenus.model.CloudPlates
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Plate
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Table
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Tables
+
+private val CLOUD_PLATE_LIST_TAG = "CloudPlateList"
+
+private val DETAIL_EDIT_TAG = "DetailEdit"
+
+private val TABLE_PLATE_LIST_TAG = "TablePlateList"
+
+private val DETAIL_ADD_TAG = "DetailAdd"
 
 class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedListener, PlatesRecyclerViewAdapter.OnPlateSelectedListener {
     val EXTRA_TITLE = "EXTRA_TITLE"
@@ -69,7 +76,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
             fragment.list = Tables[tablePosition].platos
             title = "Mesa ${tablePosition}"
             fragmentManager.beginTransaction()
-                    .replace(R.id.extra_content, fragment,"TablePlateList")
+                    .replace(R.id.extra_content, fragment, TABLE_PLATE_LIST_TAG)
                     .commit()
 
         }
@@ -88,8 +95,8 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                     val fragment = PlatesListFragment.newInstance()
                     fragment.list = CloudPlates.plates
                     fragmentManager.beginTransaction()
-                            .replace(R.id.main_content, fragment, "CloudPlateList")
-                            .addToBackStack("CloudPlateList")
+                            .replace(R.id.main_content, fragment, CLOUD_PLATE_LIST_TAG)
+                            .addToBackStack(CLOUD_PLATE_LIST_TAG)
                             .commit()
                 }
             } else {
@@ -99,8 +106,8 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                     val fragment = PlatesListFragment.newInstance()
                     fragment.list = CloudPlates.plates
                     fragmentManager.beginTransaction()
-                            .replace(R.id.extra_content, fragment, "CloudPlateList")
-                            .addToBackStack("CloudPlateList")
+                            .replace(R.id.extra_content, fragment, CLOUD_PLATE_LIST_TAG)
+                            .addToBackStack(CLOUD_PLATE_LIST_TAG)
                             .commit()
                 }
             }
@@ -160,8 +167,8 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                val fragment = PlatesListFragment.newInstance()
                fragment.list = Tables[tablePosition].platos
                fragmentManager.beginTransaction()
-                       .replace(R.id.main_content, fragment,"TablePlateList")
-                       .addToBackStack("TablePlateList")
+                       .replace(R.id.main_content, fragment, TABLE_PLATE_LIST_TAG)
+                       .addToBackStack(TABLE_PLATE_LIST_TAG)
                        .commit()
 
            }
@@ -176,7 +183,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
            title ="Mesa ${tablePosition}"
            fragment.list = Tables[tablePosition].platos
            fragmentManager.beginTransaction()
-                   .replace(R.id.extra_content, fragment,"TablePlateList")
+                   .replace(R.id.extra_content, fragment, TABLE_PLATE_LIST_TAG)
                    .commit()
        }
 
@@ -192,16 +199,16 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                     MODE = DETAIL_MODE.EDIT
                     val fragment = PlateDetailFragment.newInstance(tablePosition, platePosition)
                     fragmentManager.beginTransaction()
-                            .replace(R.id.main_content, fragment,"DetailEdit")
-                            .addToBackStack("DetailEdit")
+                            .replace(R.id.main_content, fragment, DETAIL_EDIT_TAG)
+                            .addToBackStack(DETAIL_EDIT_TAG)
                             .commit()
                 }
                 2 ->{
                     MODE = DETAIL_MODE.ADD
                     val fragment = PlateDetailFragment.newInstance(tablePosition, platePosition)
                     fragmentManager.beginTransaction()
-                            .replace(R.id.main_content, fragment,"DetailAdd")
-                            .addToBackStack("DetailAdd")
+                            .replace(R.id.main_content, fragment, DETAIL_ADD_TAG)
+                            .addToBackStack(DETAIL_ADD_TAG)
                             .commit()
                 }
             }
@@ -211,22 +218,22 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
             addButton.visibility = View.GONE
             val currenFragment = fragmentManager.findFragmentById(R.id.extra_content)
             when (currenFragment.tag) {
-                "TablePlateList" ->{
+                TABLE_PLATE_LIST_TAG ->{
                     MODE = DETAIL_MODE.EDIT
                     title = "Mesa ${tablePosition}/Detalle de Plato"
                     val fragment = PlateDetailFragment.newInstance(tablePosition, platePosition)
                     fragmentManager.beginTransaction()
-                            .replace(R.id.extra_content, fragment,"DetailEdit")
-                            .addToBackStack("DetailEdit")
+                            .replace(R.id.extra_content, fragment, DETAIL_EDIT_TAG)
+                            .addToBackStack(DETAIL_EDIT_TAG)
                             .commit()
                 }
-                "CloudPlateList" ->{
+                CLOUD_PLATE_LIST_TAG ->{
                     MODE = DETAIL_MODE.ADD
                     title = "Mesa ${tablePosition}/Seleccione un plato/Detalle de Plato"
                     val fragment = PlateDetailFragment.newInstance(tablePosition, platePosition)
                     fragmentManager.beginTransaction()
-                            .replace(R.id.extra_content, fragment,"DetailAdd")
-                            .addToBackStack("DetailAdd")
+                            .replace(R.id.extra_content, fragment, DETAIL_ADD_TAG)
+                            .addToBackStack(DETAIL_ADD_TAG)
                             .commit()
                 }
             }
@@ -241,20 +248,20 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                 val currentFragment = fragmentManager.findFragmentById(R.id.main_content)
                 when(currentFragment.tag){
 
-                    "CloudPlateList" ->{
+                    CLOUD_PLATE_LIST_TAG ->{
                         title ="Mesa ${tablePosition}"
                         addButton.visibility = View.VISIBLE
                     }
-                    "DetailEdit" ->{
+                    DETAIL_EDIT_TAG ->{
                         title = "Mesa ${tablePosition}/Seleccione un plato"
                         addButton.visibility = View.GONE
                     }
-                    "TablePlateList" ->{
+                    TABLE_PLATE_LIST_TAG ->{
                         tablePosition = -1
                         title = "Seleccione una mesa"
                         addButton.visibility = View.GONE
                     }
-                    "DetailAdd" ->{
+                    DETAIL_ADD_TAG ->{
                         title ="Mesa ${tablePosition}"
                         addButton.visibility = View.VISIBLE
                     }
