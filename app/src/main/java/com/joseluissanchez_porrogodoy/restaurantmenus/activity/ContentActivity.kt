@@ -82,7 +82,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
     private fun setAddButton() {
         addButton?.setOnClickListener {
             if (!tableMode) {
-                title = "Seleccione un Plato"
+                title = "Mesa ${tablePosition}/Seleccione un plato"
                 addButton.visibility = View.GONE
                 if (fragmentManager.findFragmentById(R.id.main_content) != null) {
                     val fragment = PlatesListFragment.newInstance()
@@ -201,7 +201,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
                     val fragment = PlateDetailFragment.newInstance(tablePosition, platePosition)
                     fragmentManager.beginTransaction()
                             .replace(R.id.main_content, fragment,"DetailAdd")
-                            .addToBackStack("DetailADD")
+                            .addToBackStack("DetailAdd")
                             .commit()
                 }
             }
@@ -238,30 +238,25 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
         if(!tableMode){
             if (fragmentManager.backStackEntryCount > 0) {
                 fragmentManager.popBackStack()
-                val index = fragmentManager.backStackEntryCount - 1
                 val currentFragment = fragmentManager.findFragmentById(R.id.main_content)
-                when(currentFragment){
-                    is PlateDetailFragment->when(index){
-                            2->{
-                                title = "Seleccione un Plato"
-                                addButton.visibility = View.GONE
-                            }
-                            1->{
-                                title ="Mesa ${tablePosition}"
-                                addButton.visibility = View.VISIBLE
-                            }
-                        }
+                when(currentFragment.tag){
 
-                    is PlatesListFragment->when(index){
-                        1-> {
-                            title ="Mesa ${tablePosition}"
-                            addButton.visibility = View.VISIBLE
-                        }
-                        0-> {
-                            tablePosition = -1
-                            title = "Seleccione una mesa"
-                            addButton.visibility = View.GONE
-                        }
+                    "CloudPlateList" ->{
+                        title ="Mesa ${tablePosition}"
+                        addButton.visibility = View.VISIBLE
+                    }
+                    "DetailEdit" ->{
+                        title = "Mesa ${tablePosition}/Seleccione un plato"
+                        addButton.visibility = View.GONE
+                    }
+                    "TablePlateList" ->{
+                        tablePosition = -1
+                        title = "Seleccione una mesa"
+                        addButton.visibility = View.GONE
+                    }
+                    "DetailAdd" ->{
+                        title ="Mesa ${tablePosition}"
+                        addButton.visibility = View.VISIBLE
                     }
                 }
 

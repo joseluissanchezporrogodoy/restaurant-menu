@@ -100,7 +100,7 @@ class PlateDetailFragment : Fragment() {
 
     private fun cancel() {
         when(MODE){
-            DETAIL_MODE.ADD-> activity.title = "Seleccione un Plato"
+            DETAIL_MODE.ADD-> activity.title = "Mesa ${tablePosition}/Seleccione un plato"
             DETAIL_MODE.EDIT-> activity.title = "Mesa ${tablePosition}"
         }
 
@@ -114,12 +114,14 @@ class PlateDetailFragment : Fragment() {
         Toast.makeText(root.context, "Eliminado", Toast.LENGTH_LONG).show()
     }
     private fun add(){
-        //TODO cambiar el título en funcion de la accion y meterlo en strings
         when(MODE){
             DETAIL_MODE.ADD->{
-                ( activity as ContentActivity).setTitle("Seleccione un Plato")
-                plate.updateNote(note.text.toString())
-                Tables[tablePosition].platos.add(plate)
+                ( activity as ContentActivity).setTitle("Mesa ${tablePosition}/Seleccione un plato")
+                //plate.updateNote(note.text.toString())
+                var plateTosave = plate.copy()
+                plateTosave.updateNote(note.text.toString())
+                Tables[tablePosition].platos.add(plateTosave)
+
 
             }
             DETAIL_MODE.EDIT->{

@@ -20,4 +20,5 @@ data class Plate(val name: String,
     fun updateNote(newNote: String){
         this.note = newNote
     }
+    fun copy() = Plate( name, allergens,image, description, "", price)
 }
