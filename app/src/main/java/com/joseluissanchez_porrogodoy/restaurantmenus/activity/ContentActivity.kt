@@ -133,7 +133,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
     }
     private fun showCount() {
         var message: String
-        var title: String
+        val title: String
         when(tablePosition){
             -1 -> {
                 title = resources.getString(R.string.selec_table)
