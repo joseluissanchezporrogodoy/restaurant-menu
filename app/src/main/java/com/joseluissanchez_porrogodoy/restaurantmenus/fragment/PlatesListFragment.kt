@@ -77,9 +77,6 @@ class PlatesListFragment : Fragment() {
 
         outState?.putSerializable(LIST,list)
     }
-    fun changeList(newlist: ArrayList<Plate>){
-        plateListRecyclerView.adapter = PlatesRecyclerViewAdapter(newlist, onPlateClickListener)
-        plateListRecyclerView.adapter.notifyDataSetChanged()
-    }
+
 
 }

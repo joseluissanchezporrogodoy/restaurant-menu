@@ -1,9 +1,11 @@
 package com.joseluissanchez_porrogodoy.restaurantmenus.activity
 
 import android.app.AlertDialog
+import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.Snackbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -30,8 +32,7 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
 
     private val TABLE_LIST_TAG = "TableList"
 
-    val EXTRA_TITLE = "EXTRA_TITLE"
-    val EXTRA_BUTTON_VISIBILITY = "EXTRA_BUTTON_VISIBILITY"
+
     val EXTRA_FRAGMENT_TAG = "EXTRA_FRAGMENT_TAG"
 
     val addButton: FloatingActionButton by lazy { findViewById<FloatingActionButton>(R.id.add_plate_button) }
@@ -48,13 +49,13 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
         if(findViewById<View>(R.id.extra_content)!= null){
             tableMode = true
             addButton.visibility = View.VISIBLE
-            //initTableMode()
+
         }else{
             tableMode = false
             title = resources.getString(R.string.selec_table)
             addButton.visibility = View.GONE
         }
-        /// Solo recupero los datos no me preocupo de otra cosa
+
         if (savedInstanceState != null){
             tablePosition = savedInstanceState.getInt(PlateDetailFragment.EXTRA_TABLE_POSITION)
             platePosition = savedInstanceState.getInt(PlateDetailFragment.EXTRA_PLATE_POSITION)
@@ -167,7 +168,6 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
            title = resources.getString(R.string.table)+" ${position}"
            tablePosition = position
            if (findViewById<View>(R.id.main_content) != null) {
-               // Comprobamos primero que no tenemos ya añadido el fragment a nuestra jerarquía
                val fragment = PlatesListFragment.newInstance()
                fragment.list = Tables[tablePosition].platos
                fragmentManager.beginTransaction()
@@ -307,8 +307,6 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
         super.onSaveInstanceState(outState)
         outState?.putSerializable(PlateDetailFragment.EXTRA_TABLE_POSITION,tablePosition)
         outState?.putSerializable(PlateDetailFragment.EXTRA_PLATE_POSITION,platePosition)
-        outState?.putSerializable(EXTRA_TITLE,title.toString())
-        outState?.putSerializable(EXTRA_BUTTON_VISIBILITY,isAddButtonVisible())
         outState?.putSerializable(EXTRA_FRAGMENT_TAG,getPreviousFragmentTag())
 
     }
@@ -328,6 +326,14 @@ class ContentActivity : AppCompatActivity(), TablesListFragment.OnTableSelectedL
 
         }
 
+    }
+    fun showMessage(){
+        Snackbar.make(findViewById(android.R.id.content), "Esto es otra prueba", Snackbar.LENGTH_LONG)
+                .setActionTextColor(Color.CYAN)
+                .setAction("Acción") {
+
+                }
+                .show()
     }
 
 }

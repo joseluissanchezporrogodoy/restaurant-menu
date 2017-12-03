@@ -1,6 +1,7 @@
 package com.joseluissanchez_porrogodoy.restaurantmenus.fragment
 
 import android.app.Fragment
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
@@ -16,6 +17,9 @@ import com.joseluissanchez_porrogodoy.restaurantmenus.model.Plate
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Table
 import com.joseluissanchez_porrogodoy.restaurantmenus.model.Tables
 import com.squareup.picasso.Picasso
+import android.support.design.widget.Snackbar
+
+
 
 /**
  * Created by joseluissanchez-porrogodoy on 30/11/2017.
@@ -60,14 +64,14 @@ class PlateDetailFragment : Fragment() {
             when(MODE){
                 DETAIL_MODE.ADD->{
                     plate = CloudPlates[platePosition]
-                    root.findViewById<Button>(R.id.add_btn).setText("Añadir")
-                    root.findViewById<Button>(R.id.cancel_btn).setText("Cancelar")
+                    root.findViewById<Button>(R.id.add_btn).setText(resources.getString(R.string.add))
+                    root.findViewById<Button>(R.id.cancel_btn).setText(resources.getString(R.string.cancel))
                     root.findViewById<Button>(R.id.cancel_btn).setOnClickListener { cancel() }
                 }
                 DETAIL_MODE.EDIT->{
                     plate = Tables[tablePosition].platos[platePosition]
-                    root.findViewById<Button>(R.id.add_btn).setText("Editar")
-                    root.findViewById<Button>(R.id.cancel_btn).setText("Eliminar")
+                    root.findViewById<Button>(R.id.add_btn).setText(resources.getString(R.string.edit))
+                    root.findViewById<Button>(R.id.cancel_btn).setText(resources.getString(R.string.delete))
                     root.findViewById<Button>(R.id.cancel_btn).setOnClickListener { delete()}
                 }
             }
@@ -111,26 +115,28 @@ class PlateDetailFragment : Fragment() {
         activity.title = resources.getString(R.string.table)+" ${tablePosition}"
         ( activity as ContentActivity).setButtonVisivility()
         fragmentManager.popBackStackImmediate()
-        Toast.makeText(root.context, "Eliminado", Toast.LENGTH_LONG).show()
+        Toast.makeText(root.context, resources.getString(R.string.deleted), Toast.LENGTH_LONG).show()
+
+
     }
     private fun add(){
-        when(MODE){
-            DETAIL_MODE.ADD->{
-                ( activity as ContentActivity).setTitle(resources.getString(R.string.table)+" ${tablePosition}/"+resources.getString(R.string.selec_plate))
+        when(MODE) {
+            DETAIL_MODE.ADD -> {
+                (activity as ContentActivity).setTitle(resources.getString(R.string.table) + " ${tablePosition}/" + resources.getString(R.string.selec_plate))
                 var plateTosave = plate.copy()
                 plateTosave.updateNote(note.text.toString())
                 Tables[tablePosition].platos.add(plateTosave)
-
-
+                Toast.makeText(root.context, resources.getString(R.string.added), Toast.LENGTH_LONG).show()
             }
-            DETAIL_MODE.EDIT->{
-                ( activity as ContentActivity).setTitle(resources.getString(R.string.table)+" ${tablePosition}")
-                ( activity as ContentActivity).setButtonVisivility()
+            DETAIL_MODE.EDIT -> {
+                (activity as ContentActivity).setTitle(resources.getString(R.string.table) + " ${tablePosition}")
+                (activity as ContentActivity).setButtonVisivility()
                 plate.updateNote(note.text.toString())
                 Tables[tablePosition].platos.get(platePosition).updateNote(note.text.toString())
+                Toast.makeText(root.context, resources.getString(R.string.edited), Toast.LENGTH_LONG).show()
             }
         }
-        Toast.makeText(root.context, "Editado/Añadido", Toast.LENGTH_LONG).show()
+
         fragmentManager.popBackStackImmediate()
     }
 

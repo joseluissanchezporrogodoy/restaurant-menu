@@ -17,4 +17,11 @@
     <string name="total_message">Total a pagar: %s euros</string>
     <string name="total_empty">No hay platos añadidos.</string>
     <string name="plate_detail">Detalle de Plato</string>
+    <string name="add">Añadir</string>
+    <string name="cancel">Cancelar</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Eliminar</string>
+    <string name="deleted">Eliminado</string>
+    <string name="added">Añadido</string>
+    <string name="edited">Editado</string>
 </resources>

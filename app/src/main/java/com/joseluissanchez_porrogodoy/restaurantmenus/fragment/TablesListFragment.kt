@@ -62,22 +62,15 @@ class TablesListFragment : Fragment() {
         var dowloadMenuInteractor: DownloadMenuInteractor = DownloadMenuInteractorImpl()
         async(UI){
             val newPlateList: Deferred<ArrayList<Plate>?> = bg {
-                //dowloadPlateList()
                 dowloadMenuInteractor.execute()
             }
 
-
             val dowloadedPlateList = newPlateList.await()
-
             if (dowloadedPlateList != null) {
-                // Simulamos un retardo
-                //Thread.sleep(10000)
-                // Toddo ha ido bien,
                 CloudPlates.plates = dowloadedPlateList
                 viewSwitcher.displayedChild = VIEW_INDEX.LIST.index
             }
             else {
-                // Ha habido algún tipo de error, se lo decimos al usuario con un diálogo
                 AlertDialog.Builder(activity)
                         .setTitle("Error")
                         .setMessage("No me pude descargar la información del tiempo")
