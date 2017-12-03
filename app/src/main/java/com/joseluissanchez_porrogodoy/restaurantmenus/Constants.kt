@@ -12,4 +12,4 @@ enum class DETAIL_MODE(val index: Int){
 var MODE: DETAIL_MODE = DETAIL_MODE.EDIT
 
 
-
+var JSON_URL = "http://www.mocky.io/v2/5a225ade2f000096045ec5d3"

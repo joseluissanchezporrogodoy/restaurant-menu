@@ -1,5 +1,6 @@
 package com.joseluissanchez_porrogodoy.restaurantmenus.model
 
+import com.joseluissanchez_porrogodoy.restaurantmenus.JSON_URL
 import org.json.JSONObject
 import java.net.URL
 import java.util.*
@@ -13,7 +14,7 @@ class DownloadMenuInteractorImpl: DownloadMenuInteractor{
     override fun execute(): ArrayList<Plate>? {
         if(CloudPlates.plates.count() == 0) {
             try {
-                val url = URL("http://www.mocky.io/v2/5a225ade2f000096045ec5d3")
+                val url = URL(JSON_URL)
                 val jsonString = Scanner(url.openStream(), "UTF-8").useDelimiter("\\A").next()
                 val jsonRoot = JSONObject(jsonString)
                 val list = jsonRoot.getJSONArray("menu")
